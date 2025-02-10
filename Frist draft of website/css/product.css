@@ -1,0 +1,80 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: red;
+}
+
+.logo h1 {
+    background-color: red;
+}
+
+.main-nav{
+    padding: 15px 20px;
+    align-items: center;
+    display: flex;
+    background-color: red;
+    justify-content: space-between;
+}
+
+.nav-links{
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+.nav-links li {
+    display: inline-block;
+}
+
+.search-bar{
+    text-align: center;
+}
+
+.search-bar input{
+    border: 1px solid ;
+    border-radius: 5px;
+    padding: 8px;
+    outline: none;
+    background-color: white;
+}
+
+.search-bar button {
+    border: none;
+    border-radius: 5px;padding: 8px 12px;
+    cursor: pointer;
+    background-color: aqua;
+}
+
+.sell-button{
+    background-color: yellow;
+}
+
+.value-checker{
+    background-color: blue;
+    text-decoration: chartreuse;
+}
+
+.hero{
+    text-align: center;
+}
+
+
+.product{
+    padding-top: 20px;
+    columns: 2;
+    text-align: center
+}
+
+.product p{
+    padding-top: 20px;
+    font-size: large;
+    
+}
+
+.product img{
+    height: 300px;
+    width: 380px;
+
+}
+
