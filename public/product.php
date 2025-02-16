@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechTrade - Buy, Sell, Exchange Tech</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/product.css">
 </head>
 
 <body>
@@ -42,8 +46,13 @@
 
         <section class="featured-categories">
             <!-- We can fill these in with actual categories later -->
-            <div class="category"><a href="Product.html">Product</a></div>
-            
+            <div class="product">
+                <h3>MSI RX570 8GBS</h3>
+                <p>€120</p>
+                <p>This Entry level graphics card released in April 18th, 2017 and has been preforminng just great since all those years</p>
+                
+                <img src="images/msi370.jpg" alt="MSI 370 Motherboard">
+            </div>
         </section>
     </main>
 
