@@ -5,10 +5,6 @@
     background-color: red;
 }
 
-.category{
-    text-align: center;
-}
-
 .logo h1 {
     background-color: red;
 }
@@ -32,8 +28,9 @@
 }
 
 .search-bar{
-   text-align: center;
-    
+
+    text-align: center;
+    align-items: center;
 }
 
 .search-bar input{
@@ -45,7 +42,9 @@
 }
 
 .search-bar button {
+    border: none;
     
+    cursor: pointer;
     background-color: aqua;
 }
 
@@ -69,7 +68,6 @@
 }
 
 .bestsellers h2 {
-    font-family: 'Times New Roman', Times, serif;
     text-align: center;
     margin-bottom: 2rem;
 }
@@ -81,10 +79,6 @@
     padding: 1rem;
 }
 
-.product-card p {
-    background-color: white;
-}
- 
 .product-card {
     background: white;
     border-radius: 8px;
@@ -106,7 +100,6 @@
 }
 
 .product-card h3 {
-    background-color: white;
     font-size: 1.2rem;
     margin: 0.5rem 0;
 }
@@ -180,7 +173,6 @@
 }
 
 button[type="submit"] {
-    
     width: 300px;
     padding: 1rem;
     background: #3498db;
@@ -193,7 +185,6 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-   
     background: #2980b9;
 }
 
@@ -213,27 +204,3 @@ button[type="submit"]:hover {
     height: 300px;
     width: 380px;
 }
-
-/* Submit form css */
-.submit-form h2{
-    background-color: white;
-    font-family: serif;
-    font-size: x-large;
-} 
-
-.form-group{
-    background-color: white;
-}
-
-label{
-    background-color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-form{
-    background-color: white;
-    text-align: center;
-}
-
-
-

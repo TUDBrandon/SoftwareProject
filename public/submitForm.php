@@ -30,12 +30,12 @@ init_session();
     <main>
         <section class="submit-form">
             <h2>Submit Your Item</h2>
-            <form action="" method="POST">
+            <form class="form"action="" method="POST">
                 <?php
                 echo create_form_field('title', 'Item name');
                 echo create_form_field('description', 'Condition of item', 'textarea');
                 ?>
-                <button type="submit">Submit Item</button>
+                <button class="button-form" type="submit">Submit Item</button>
             </form>
         </section>
     </main>
