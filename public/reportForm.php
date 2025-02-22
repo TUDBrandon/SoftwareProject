@@ -1,23 +1,23 @@
 <?php
 require_once '../includes/functions.php';
-require_once '../includes/handle_submit.php';
+require_once '../includes/handle_report.php';
 init_session();
 
 $success_message = '';
 $error_messages = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $errors = validate_submit_form($_POST, $_FILES);
+    $errors = validate_report_form($_POST, $_FILES);
     
     if (empty($errors)) {
         try {
-            $item_id = save_submit($_POST, $_FILES);
-            $success_message = "Item submitted successfully! Your item ID is: " . $item_id;
+            $report_id = save_report($_POST, $_FILES);
+            $success_message = "Report submitted successfully! Your report ID is: " . $report_id;
             
             // Clear form data on success
             $_POST = [];
         } catch (Exception $e) {
-            $error_messages[] = "An error occurred while saving your submission. Please try again.";
+            $error_messages[] = "An error occurred while saving your report. Please try again.";
         }
     } else {
         $error_messages = $errors;
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Item - TechTrade</title>
+    <title>Report Secondhand Item - TechTrade</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <main>
         <section class="submit-form">
-            <h2>Submit Your Item</h2>
+            <h2>Report A Faulty Secondhand Item</h2>
             
             <?php if ($success_message): ?>
                 <div class="success-message">
@@ -79,29 +79,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php
                 // Customer Information
                 echo create_form_field('customer_name', 'Your Full Name', 'text', true, $_POST['customer_name'] ?? '');
-                echo create_form_field('email', 'Email Address', 'email', true, $_POST['email'] ?? '');
+                echo create_form_field('employee_code', 'Employee Code (found on receipt)', 'text', true, $_POST['employee_code'] ?? '');
                 
                 // Item Information
                 echo create_form_field('title', 'Item name', 'text', true, $_POST['title'] ?? '');
-                
-                // Category Selection
-                ?>
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <select name="category" id="category" required>
-                        <option value="">Select a category</option>
-                        <option value="gaming" <?php echo (isset($_POST['category']) && $_POST['category'] === 'gaming') ? 'selected' : ''; ?>>Gaming</option>
-                        <option value="hardware" <?php echo (isset($_POST['category']) && $_POST['category'] === 'hardware') ? 'selected' : ''; ?>>Hardware</option>
-                        <option value="phones" <?php echo (isset($_POST['category']) && $_POST['category'] === 'phones') ? 'selected' : ''; ?>>Phones</option>
-                        <option value="laptops" <?php echo (isset($_POST['category']) && $_POST['category'] === 'laptops') ? 'selected' : ''; ?>>Laptops</option>
-                        <option value="accessories" <?php echo (isset($_POST['category']) && $_POST['category'] === 'accessories') ? 'selected' : ''; ?>>Accessories</option>
-                    </select>
-                </div>
-                <?php
+                echo create_form_field('date', 'Date of Purchase', 'date', true, $_POST['date'] ?? '');
+                echo create_form_field('expectation', 'What was disclosed at sale?', 'textarea', true, $_POST['expectation'] ?? '');
                 echo create_form_field('description', 'Condition of item', 'textarea', true, $_POST['description'] ?? '');
-                echo create_form_field('item_image', 'Images of Item (JPG or PNG only, max 5MB)', 'file', true);
+                echo create_form_field('technical', 'Technical Problems', 'textarea', true, $_POST['technical'] ?? '');
+                
+                // File uploads
+                echo create_form_field('item_image', 'Image of Item', 'file', true);
+                echo create_form_field('receipt_image', 'Image of Receipt/Proof of Purchase', 'file', true);
                 ?>
-                <button type="submit">Submit for Review</button>
+                <button type="submit">Submit Report</button>
             </form>
         </section>
     </main>

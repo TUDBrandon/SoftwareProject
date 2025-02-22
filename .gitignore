@@ -1,0 +1,6 @@
+.idea/
+.idea/*
+uploads/
+*.iml
+data/
+data/*

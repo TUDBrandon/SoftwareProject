@@ -13,24 +13,24 @@ session_start();
 
 <body>
     <header>
-        <div class="logo">
-            <h1>TechTrade</h1>
-        </div>
         <nav class="main-nav">
-            <ul class="nav-links">
-                <li><a href="index.php">Buy</a></li>
-                <li><a href="sell.php">Sell</a></li>
-                <li><a href="gaming.php">Gaming</a></li>
-                <li><a href="hardware.php">Hardware</a></li>
-                <li><a href="account.php">Account</a></li>
-            </ul>
+            <div class="nav-left">
+                <a href="index.php" class="logo">TechTrade</a>
+                <ul class="nav-links">
+                    <li><a href="index.php">Buy</a></li>
+                    <li><a href="submitForm.php">Sell</a></li>
+                    <li><a href="gaming.php">Gaming</a></li>
+                    <li><a href="hardware.php">Hardware</a></li>
+                    <li><a href="account.php">Account</a></li>
+                </ul>
+            </div>
+            <div class="search-bar">
+                <form action="search.php" method="GET">
+                    <input type="search" name="q" placeholder="Search for games, phones, tech...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
         </nav>
-        <div class="search-bar">
-            <form action="search.php" method="GET">
-                <input type="search" name="q" placeholder="Search for games, phones, tech...">
-                <button type="submit">Search</button>
-            </form>
-        </div>
     </header>
 
     <main>
@@ -38,8 +38,8 @@ session_start();
             <h2>Trade in Your Tech for Cash or Store Credit</h2>
             <p>Buy, sell, or exchange games, phones, and other tech</p>
             <div class="cta-buttons">
-                <button class="sell-button">Sell Your Tech</button>
-                <button class="value-checker">Check Trade-in Value</button>
+                <a href="submitForm.php" class="sell-button">Sell Your Tech</a>
+                <a href="reportForm.php" class="value-checker">Report an Issue</a>
             </div>
         </section>
 
@@ -58,41 +58,48 @@ session_start();
                         'name' => 'PlayStation 5',
                         'price' => 499.99,
                         'image' => 'images/ps5.jpg',
-                        'category' => 'Gaming'
+                        'category' => 'Gaming',
+                        'link' => 'playstation5.php'
                     ],
                     [
                         'name' => 'MSI GTX 370',
                         'price' => 499.99,
                         'image' => 'images/msi370.jpg',
-                        'category' => 'Hardware'
+                        'category' => 'Hardware',
+                        'link' => 'msi-rx570.php'
                     ],
                     [
                         'name' => 'CPU i7 13th Gen',
                         'price' => 349.99,
                         'image' => 'images/CPUi713th.jpg',
-                        'category' => 'Hardware'
+                        'category' => 'Hardware',
+                        'link' => 'intel-i7.php'
                     ],
                     [
                         'name' => 'iPhone 14',
                         'price' => 499.99,
                         'image' => 'images/iphone14.jpg',
-                        'category' => 'Hardware'
+                        'category' => 'Hardware',
+                        'link' => 'iphone14.php'
                     ],
                     [
                         'name' => 'COD Black Ops 6',
                         'price' => 59.99,
                         'image' => 'images/CodBO6.jpg',
-                        'category' => 'Consoles'
+                        'category' => 'Consoles',
+                        'link' => 'cod-bo6.php'
                     ]
                 ];
 
                 for($i = 0; $i < count($bestsellers); $i++) {
                     $product = $bestsellers[$i];
                     echo "<div class='product-card'>";
+                    echo "<a href='{$product['link']}' class='product-link'>";
                     echo "<img src='{$product['image']}' alt='{$product['name']}'>";
                     echo "<h3>{$product['name']}</h3>";
                     echo "<p class='category'>{$product['category']}</p>";
                     echo "<p class='price'>€{$product['price']}</p>";
+                    echo "</a>";
                     echo "<button class='buy-now'>Buy Now</button>";
                     echo "</div>";
                 }
