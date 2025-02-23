@@ -16,9 +16,9 @@ header {
 }
 
 .main-nav {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem;
+    max-width: 1500px;
+    height: 100px;
+    
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -462,5 +462,13 @@ body {
     .product-grid {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         padding: 1rem;
+    }
+
+    iframe{
+        justify-content: center;
+    }
+
+    .text{
+        font-size: xx-large;
     }
 }

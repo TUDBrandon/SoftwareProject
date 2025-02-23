@@ -22,6 +22,7 @@ session_start();
                     <li><a href="gaming.php">Gaming</a></li>
                     <li><a href="hardware.php">Hardware</a></li>
                     <li><a href="account.php">Account</a></li>
+                    <li><a href="contactUs.php">Contact Us</a></li>
                 </ul>
             </div>
             <div class="search-bar">
