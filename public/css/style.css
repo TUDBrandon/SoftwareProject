@@ -61,6 +61,49 @@ header {
     color: #3498db;
 }
 
+.nav-links li {
+    position: relative;
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    min-width: 180px;
+    border-radius: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.dropdown li {
+    display: block;
+    width: 100%;
+}
+
+.dropdown a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.dropdown a:hover {
+    background-color: #f5f5f5;
+    color: #3498db;
+}
+
+.nav-links li:hover .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
 .search-bar {
     flex: 0 1 400px;
 }
@@ -180,6 +223,51 @@ main {
 
 .buy-now:hover {
     background: #2980b9;
+}
+
+/* Carousel Styles */
+.carousel-container {
+    width: 100%;
+    overflow: hidden;
+    margin: 2rem 0;
+}
+
+.carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    transition: transform 0.5s ease;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.carousel .product-card {
+    flex: 0 0 250px;
+}
+
+.carousel-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.carousel-controls button {
+    padding: 0.5rem 1rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.carousel-controls button:hover {
+    background-color: #2980b9;
+}
+
+.category-section {
+    padding: 2rem 0;
+    scroll-margin-top: 100px;
 }
 
 /* Form Styles */

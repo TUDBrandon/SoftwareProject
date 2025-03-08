@@ -39,7 +39,7 @@ function save_submit($data, $files) {
     }
     
     // Generate unique ID for this submission
-    $item_id = uniqid('item_');
+    $item_id = uniqid();
     
     // Handle file upload
     $images = [];

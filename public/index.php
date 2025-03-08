@@ -17,7 +17,15 @@ session_start();
             <div class="nav-left">
                 <a href="index.php" class="logo">TechTrade</a>
                 <ul class="nav-links">
-                    <li><a href="index.php">Buy</a></li>
+                    <li>
+                        <a href="browse.php">Buy</a>
+                        <ul class="dropdown">
+                            <li><a href="browse.php?category=hardware#hardware">Hardware</a></li>
+                            <li><a href="browse.php?category=consoles#consoles">Consoles</a></li>
+                            <li><a href="browse.php?category=phones#phones">Phones</a></li>
+                            <li><a href="browse.php?category=games#games">Games</a></li>
+                        </ul>
+                    </li>
                     <li><a href="submitForm.php">Sell</a></li>
                     <li><a href="gaming.php">Gaming</a></li>
                     <li><a href="hardware.php">Hardware</a></li>

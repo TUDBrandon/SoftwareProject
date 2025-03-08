@@ -51,7 +51,7 @@ function save_report($data, $files) {
     }
     
     // Generate unique ID for this report
-    $report_id = uniqid('report_');
+    $report_id = uniqid();
     
     // Handle file uploads
     $item_image = $report_id . '_item.' . pathinfo($files['item_image']['name'], PATHINFO_EXTENSION);
