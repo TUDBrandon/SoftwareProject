@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../src/DBconnect.php';
+require_once __DIR__ . '/common.php';
+
 function validate_submit_form($data, $files) {
     $errors = [];
     
@@ -32,51 +35,44 @@ function validate_submit_form($data, $files) {
 }
 
 function save_submit($data, $files) {
+    global $connection;
+    
     // Create uploads directory if it doesn't exist
     $upload_dir = __DIR__ . '/../public/uploads/items/';
     if (!file_exists($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }
     
-    // Generate unique ID for this submission
-    $item_id = uniqid();
-    
     // Handle file upload
-    $images = [];
-    $image_name = $item_id . '_' . pathinfo($files['item_image']['name'], PATHINFO_EXTENSION);
-    move_uploaded_file($files['item_image']['tmp_name'], $upload_dir . $image_name);
-    $images[] = $image_name;
-    
-    // Prepare submission data
-    $submission = [
-        'id' => $item_id,
-        'timestamp' => time(),
-        'customer_name' => $data['customer_name'],
-        'email' => $data['email'],
-        'title' => $data['title'],
-        'category' => $data['category'],
-        'description' => $data['description'],
-        'images' => $images,
-        'status' => 'pending'
-    ];
-    
-    // Save to JSON file (temporary storage until we have a database)
-    $submissions_file = __DIR__ . '/../data/submissions.json';
-    $submissions = [];
-    
-    if (file_exists($submissions_file)) {
-        $submissions = json_decode(file_get_contents($submissions_file), true) ?? [];
+    $image_name = '';
+    if (isset($files['item_image']) && $files['item_image']['error'] === 0) {
+        $image_name = uniqid() . '_' . basename($files['item_image']['name']);
+        move_uploaded_file($files['item_image']['tmp_name'], $upload_dir . $image_name);
     }
     
-    $submissions[] = $submission;
-    
-    // Create data directory if it doesn't exist
-    $data_dir = dirname($submissions_file);
-    if (!file_exists($data_dir)) {
-        mkdir($data_dir, 0777, true);
+    try {
+        // Insert submission into database
+        $stmt = $connection->prepare("
+            INSERT INTO submission (username, email, title, category, description, images, status_update)
+            VALUES (:username, :email, :title, :category, :description, :images, 'Pending')
+        ");
+        
+        $stmt->bindParam(':username', $data['customer_name']);
+        $stmt->bindParam(':email', $data['email']);
+        $stmt->bindParam(':title', $data['title']);
+        $stmt->bindParam(':category', $data['category']);
+        $stmt->bindParam(':description', $data['description']);
+        $stmt->bindParam(':images', $image_name);
+        
+        $stmt->execute();
+        
+        // Return the ID of the newly inserted submission
+        return $connection->lastInsertId();
+        
+    } catch (PDOException $e) {
+        // Log the error
+        error_log("Database error in save_submit: " . $e->getMessage());
+        throw new Exception("Failed to save submission: " . $e->getMessage());
     }
-    
-    file_put_contents($submissions_file, json_encode($submissions, JSON_PRETTY_PRINT));
-    
-    return $item_id;
 }
+?>
