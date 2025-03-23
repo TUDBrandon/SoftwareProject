@@ -23,26 +23,7 @@ session_start();
 </head>
 
 <body>
-    <header>
-        <nav class="main-nav">
-            <div class="nav-left">
-                <a href="index.php" class="logo">TechTrade</a>
-                <ul class="nav-links">
-                    <li><a href="index.php">Buy</a></li>
-                    <li><a href="submitForm.php">Sell</a></li>
-                    <li><a href="gaming.php">Gaming</a></li>
-                    <li><a href="hardware.php">Hardware</a></li>
-                    <li><a href="account.php">Account</a></li>
-                </ul>
-            </div>
-            <div class="search-bar">
-                <form action="search.php" method="GET">
-                    <input type="search" name="q" placeholder="Search for games, phones, tech...">
-                    <button type="submit">Search</button>
-                </form>
-            </div>
-        </nav>
-    </header>
+    <?php echo generate_navbar('buy'); ?>
 
     <main>
         <section class="featured-categories">

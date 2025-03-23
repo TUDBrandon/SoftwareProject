@@ -1,10 +1,4 @@
 <?php
-function init_session() {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-}
-
 function create_form_field($name, $label, $type = 'text', $required = true, $value = '') {
     $required_attr = $required ? 'required' : '';
     $html = <<<HTML
@@ -22,13 +16,21 @@ function display_product_carousel($products, $category_id) {
     $html .= '<div class="carousel-track">';
     
     foreach ($products as $product) {
+        // Fix image path - if it starts with 'public/', remove it
+        $image = $product['image'];
+        if (strpos($image, 'public/') === 0) {
+            $image = substr($image, 7); // Remove 'public/' prefix
+        }
+        
         $html .= '<div class="carousel-item">';
+        $html .= '<a href="' . $product['link'] . '" class="product-link">';
         $html .= '<div class="product-card">';
-        $html .= '<img src="' . $product['image'] . '" alt="' . $product['name'] . '">';
+        $html .= '<img src="' . $image . '" alt="' . $product['name'] . '">';
         $html .= '<h3>' . $product['name'] . '</h3>';
         $html .= '<p class="price">$' . number_format($product['price'], 2) . '</p>';
-        $html .= '<a href="' . $product['link'] . '" class="btn">View Details</a>';
+        $html .= '<button class="buy-now">View Details</button>';
         $html .= '</div>';
+        $html .= '</a>';
         $html .= '</div>';
     }
     
@@ -41,298 +43,164 @@ function display_product_carousel($products, $category_id) {
 }
 
 function get_hardware_products() {
-    require_once __DIR__ . '/../src/DBconnect.php';
-    
     try {
+        require_once __DIR__ . '/../src/DBconnect.php';
+        global $connection;
+        
+        if (!$connection) {
+            throw new Exception("Database connection failed");
+        }
+        
         $sql = "SELECT * FROM products WHERE category = 'Hardware'";
         $statement = $connection->prepare($sql);
         $statement->execute();
-        return $statement->fetchAll();
-    } catch (PDOException $e) {
-        // Fallback to hardcoded data if database fails
-        return [
-            [
-                'name' => 'MSI RX570 8GB',
-                'price' => 120,
-                'image' => 'images/msi370.jpg',
-                'category' => 'Hardware',
-                'link' => 'msi-rx570.php'
-            ],
-            [
-                'name' => 'Intel Core i7 13th Gen',
-                'price' => 399.99,
-                'image' => 'images/CPUi713th.jpg',
-                'category' => 'Hardware',
-                'link' => 'CPUi713th.php'
-            ],
-            [
-                'name' => 'NVIDIA RTX 4090',
-                'price' => 1599,
-                'image' => 'images/rtx4090.jpg',
-                'category' => 'Hardware',
-                'link' => 'rtx4090.php'
-            ],
-            [
-                'name' => 'NVIDIA RTX 5090',
-                'price' => 1999,
-                'image' => 'images/rtx5090.jpg',
-                'category' => 'Hardware',
-                'link' => 'rtx5090.php'
-            ],
-            [
-                'name' => 'Intel Core i9',
-                'price' => 549.99,
-                'image' => 'images/inteli9.jpg',
-                'category' => 'Hardware',
-                'link' => 'intel-i9.php'
-            ]
-        ];
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Convert database column names to match the expected format
+        $formatted_results = [];
+        foreach ($result as $product) {
+            // Fix image path - if it starts with 'public/', remove it
+            $image = $product['image'] ?? $product['image_path'] ?? '';
+            if (strpos($image, 'public/') === 0) {
+                $image = substr($image, 7); // Remove 'public/' prefix
+            }
+            
+            $formatted_results[] = [
+                'name' => $product['name'] ?? $product['product_name'] ?? '',
+                'price' => $product['price'] ?? 0,
+                'image' => $image,
+                'category' => $product['category'] ?? '',
+                'link' => $product['link'] ?? $product['product_link'] ?? '#'
+            ];
+        }
+        
+        return $formatted_results;
+    } catch (Exception $e) {
+        error_log("Error retrieving hardware products: " . $e->getMessage());
+        return [];
     }
 }
 
 function get_console_products() {
-    require_once __DIR__ . '/../src/DBconnect.php';
-    
     try {
+        require_once __DIR__ . '/../src/DBconnect.php';
+        global $connection;
+        
+        if (!$connection) {
+            throw new Exception("Database connection failed");
+        }
+        
         $sql = "SELECT * FROM products WHERE category = 'Consoles'";
         $statement = $connection->prepare($sql);
         $statement->execute();
-        return $statement->fetchAll();
-    } catch (PDOException $e) {
-        // Fallback to hardcoded data if database fails
-        return [
-            [
-                'name' => 'PlayStation 5',
-                'price' => 499,
-                'image' => 'images/ps5.jpg',
-                'category' => 'Consoles',
-                'link' => 'ps5.php'
-            ],
-            [
-                'name' => 'PlayStation 4',
-                'price' => 299.99,
-                'image' => 'images/ps4.jpg',
-                'category' => 'Consoles',
-                'link' => 'ps4.php'
-            ],
-            [
-                'name' => 'Nintendo Switch',
-                'price' => 299,
-                'image' => 'images/switch.jpg',
-                'category' => 'Consoles',
-                'link' => 'nintendo-switch.php'
-            ],
-            [
-                'name' => 'Xbox Series X',
-                'price' => 499.99,
-                'image' => 'images/xboxX.png',
-                'category' => 'Consoles',
-                'link' => 'xbox-series-x.php'
-            ],
-            [
-                'name' => 'Meta Quest 2',
-                'price' => 299.99,
-                'image' => 'images/oculus2.jpg',
-                'category' => 'Consoles',
-                'link' => 'oculus-quest2.php'
-            ]
-        ];
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Convert database column names to match the expected format
+        $formatted_results = [];
+        foreach ($result as $product) {
+            // Fix image path - if it starts with 'public/', remove it
+            $image = $product['image'] ?? $product['image_path'] ?? '';
+            if (strpos($image, 'public/') === 0) {
+                $image = substr($image, 7); // Remove 'public/' prefix
+            }
+            
+            $formatted_results[] = [
+                'name' => $product['name'] ?? $product['product_name'] ?? '',
+                'price' => $product['price'] ?? 0,
+                'image' => $image,
+                'category' => $product['category'] ?? '',
+                'link' => $product['link'] ?? $product['product_link'] ?? '#'
+            ];
+        }
+        
+        return $formatted_results;
+    } catch (Exception $e) {
+        error_log("Error retrieving console products: " . $e->getMessage());
+        return [];
     }
 }
 
 function get_phone_products() {
-    require_once __DIR__ . '/../src/DBconnect.php';
-    
     try {
+        require_once __DIR__ . '/../src/DBconnect.php';
+        global $connection;
+        
+        if (!$connection) {
+            throw new Exception("Database connection failed");
+        }
+        
         $sql = "SELECT * FROM products WHERE category = 'Phones'";
         $statement = $connection->prepare($sql);
         $statement->execute();
-        return $statement->fetchAll();
-    } catch (PDOException $e) {
-        // Fallback to hardcoded data if database fails
-        return [
-            [
-                'name' => 'iPhone 14',
-                'price' => 799,
-                'image' => 'images/iphone14.jpg',
-                'category' => 'Phones',
-                'link' => 'iphone14.php'
-            ],
-            [
-                'name' => 'iPhone 14 - Black',
-                'price' => 799,
-                'image' => 'images/black_iphone14.jpg',
-                'category' => 'Phones',
-                'link' => 'black-iphone14.php'
-            ],
-            [
-                'name' => 'iPhone 15 - Green',
-                'price' => 899,
-                'image' => 'images/green_iphone15.jpg',
-                'category' => 'Phones',
-                'link' => 'green-iphone15.php'
-            ],
-            [
-                'name' => 'iPhone 15 Pro Max',
-                'price' => 1199,
-                'image' => 'images/iphone15proMax.jpg',
-                'category' => 'Phones',
-                'link' => 'iphone15-promax.php'
-            ],
-            [
-                'name' => 'Samsung Galaxy S23 Ultra',
-                'price' => 1199,
-                'image' => 'images/samsungGalazyS23Ultra.jpg',
-                'category' => 'Phones',
-                'link' => 'samsung-galaxy-s23-ultra.php'
-            ]
-        ];
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Convert database column names to match the expected format
+        $formatted_results = [];
+        foreach ($result as $product) {
+            // Fix image path - if it starts with 'public/', remove it
+            $image = $product['image'] ?? $product['image_path'] ?? '';
+            if (strpos($image, 'public/') === 0) {
+                $image = substr($image, 7); // Remove 'public/' prefix
+            }
+            
+            $formatted_results[] = [
+                'name' => $product['name'] ?? $product['product_name'] ?? '',
+                'price' => $product['price'] ?? 0,
+                'image' => $image,
+                'category' => $product['category'] ?? '',
+                'link' => $product['link'] ?? $product['product_link'] ?? '#'
+            ];
+        }
+        
+        return $formatted_results;
+    } catch (Exception $e) {
+        error_log("Error retrieving phone products: " . $e->getMessage());
+        return [];
     }
 }
 
 function get_game_products() {
-    require_once __DIR__ . '/../src/DBconnect.php';
-    
     try {
+        require_once __DIR__ . '/../src/DBconnect.php';
+        global $connection;
+        
+        if (!$connection) {
+            throw new Exception("Database connection failed");
+        }
+        
         $sql = "SELECT * FROM products WHERE category = 'Games'";
         $statement = $connection->prepare($sql);
         $statement->execute();
-        return $statement->fetchAll();
-    } catch (PDOException $e) {
-        // Fallback to hardcoded data if database fails
-        return [
-            [
-                'name' => 'Call of Duty: Black Ops 6',
-                'price' => 69.99,
-                'image' => 'images/CodBO6.jpg',
-                'category' => 'Games',
-                'link' => 'codbo6.php'
-            ],
-            [
-                'name' => 'NBA 2K25 - PS5',
-                'price' => 69.99,
-                'image' => 'images/2k25PS5.jpg',
-                'category' => 'Games',
-                'link' => '2k25PS5.php'
-            ],
-            [
-                'name' => 'Grand Theft Auto V - Xbox',
-                'price' => 29.99,
-                'image' => 'images/GTAVXbox.jpg',
-                'category' => 'Games',
-                'link' => 'GTAVXbox.php'
-            ],
-            [
-                'name' => 'Hogwarts Legacy - Xbox',
-                'price' => 59.99,
-                'image' => 'images/hogwartslegacyXbox.jpg',
-                'category' => 'Games',
-                'link' => 'hogwarts-legacy-xbox.php'
-            ],
-            [
-                'name' => 'Spider-Man 2 - PS5',
-                'price' => 69.99,
-                'image' => 'images/spiderman2PS5.png',
-                'category' => 'Games',
-                'link' => 'spiderman2-ps5.php'
-            ],
-            [
-                'name' => 'Tekken 8 - PS5',
-                'price' => 69.99,
-                'image' => 'images/tekken8PS5.jpg',
-                'category' => 'Games',
-                'link' => 'tekken8-ps5.php'
-            ],
-            [
-                'name' => 'Dogman - Switch',
-                'price' => 39.99,
-                'image' => 'images/dogmanSwitch.jpg',
-                'category' => 'Games',
-                'link' => 'dogman-switch.php'
-            ],
-            [
-                'name' => 'Instant Sports - Switch',
-                'price' => 29.99,
-                'image' => 'images/instantsportsSwitch.jpg',
-                'category' => 'Games',
-                'link' => 'instant-sports-switch.php'
-            ],
-            [
-                'name' => 'It Takes Two - Switch',
-                'price' => 39.99,
-                'image' => 'images/ittakes2Switch.jpg',
-                'category' => 'Games',
-                'link' => 'it-takes-two-switch.php'
-            ],
-            [
-                'name' => 'Steam Gift Card',
-                'price' => 50.00,
-                'image' => 'images/gitcardSteam.jpeg',
-                'category' => 'Games',
-                'link' => 'steam-giftcard.php'
-            ]
-        ];
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Convert database column names to match the expected format
+        $formatted_results = [];
+        foreach ($result as $product) {
+            // Fix image path - if it starts with 'public/', remove it
+            $image = $product['image'] ?? $product['image_path'] ?? '';
+            if (strpos($image, 'public/') === 0) {
+                $image = substr($image, 7); // Remove 'public/' prefix
+            }
+            
+            $formatted_results[] = [
+                'name' => $product['name'] ?? $product['product_name'] ?? '',
+                'price' => $product['price'] ?? 0,
+                'image' => $image,
+                'category' => $product['category'] ?? '',
+                'link' => $product['link'] ?? $product['product_link'] ?? '#'
+            ];
+        }
+        
+        return $formatted_results;
+    } catch (Exception $e) {
+        error_log("Error retrieving game products: " . $e->getMessage());
+        return [];
     }
 }
 
 function include_carousel_js() {
-    $js = <<<EOT
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all carousels
-    document.querySelectorAll('.carousel-container').forEach(function(carousel) {
-        initCarousel(carousel);
-    });
-    
-    function initCarousel(carousel) {
-        const track = carousel.querySelector('.carousel-track');
-        const items = carousel.querySelectorAll('.carousel-item');
-        const prevButton = carousel.querySelector('.carousel-prev');
-        const nextButton = carousel.querySelector('.carousel-next');
-        
-        let currentIndex = 0;
-        const itemWidth = items[0].offsetWidth;
-        const itemsToShow = Math.floor(carousel.offsetWidth / itemWidth);
-        const maxIndex = items.length - itemsToShow;
-        
-        // Set initial position
-        updateCarouselPosition();
-        
-        // Add event listeners
-        prevButton.addEventListener('click', function() {
-            currentIndex = Math.max(0, currentIndex - 1);
-            updateCarouselPosition();
-        });
-        
-        nextButton.addEventListener('click', function() {
-            currentIndex = Math.min(maxIndex, currentIndex + 1);
-            updateCarouselPosition();
-        });
-        
-        function updateCarouselPosition() {
-            track.style.transform = `translateX(-${currentIndex * itemWidth}px)`;
-            
-            // Update button states
-            prevButton.disabled = currentIndex === 0;
-            nextButton.disabled = currentIndex >= maxIndex;
-        }
-        
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            const newItemsToShow = Math.floor(carousel.offsetWidth / itemWidth);
-            const newMaxIndex = items.length - newItemsToShow;
-            
-            // Adjust current index if needed
-            if (currentIndex > newMaxIndex) {
-                currentIndex = Math.max(0, newMaxIndex);
-                updateCarouselPosition();
-            }
-        });
-    }
-});
-</script>
-EOT;
-    
-    return $js;
+    $timestamp = time();
+    echo '<script src="../includes/js/carousel.js?v=' . $timestamp . '"></script>';
 }
+
 ?>

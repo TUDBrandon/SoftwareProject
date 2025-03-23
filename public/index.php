@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once '../includes/common.php';
+require_once '../includes/functions.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,35 +14,7 @@ session_start();
 </head>
 
 <body>
-    <header>
-        <nav class="main-nav">
-            <div class="nav-left">
-                <a href="index.php" class="logo">TechTrade</a>
-                <ul class="nav-links">
-                    <li>
-                        <a href="browse.php">Buy</a>
-                        <ul class="dropdown">
-                            <li><a href="browse.php?category=hardware#hardware">Hardware</a></li>
-                            <li><a href="browse.php?category=consoles#consoles">Consoles</a></li>
-                            <li><a href="browse.php?category=phones#phones">Phones</a></li>
-                            <li><a href="browse.php?category=games#games">Games</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="submitForm.php">Sell</a></li>
-                    <li><a href="gaming.php">Gaming</a></li>
-                    <li><a href="hardware.php">Hardware</a></li>
-                    <li><a href="account.php">Account</a></li>
-                    <li><a href="contactUs.php">Contact Us</a></li>
-                </ul>
-            </div>
-            <div class="search-bar">
-                <form action="search.php" method="GET">
-                    <input type="search" name="q" placeholder="Search for games, phones, tech...">
-                    <button type="submit">Search</button>
-                </form>
-            </div>
-        </nav>
-    </header>
+    <?php echo generate_navbar('buy'); ?>
 
     <main>
         <section class="hero">

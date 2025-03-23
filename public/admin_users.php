@@ -38,7 +38,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - User Management</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <style>
         .admin-panel {
             padding: 20px;
@@ -82,28 +82,8 @@ try {
     </style>
 </head>
 <body>
-    <header>
-        <nav class="main-nav">
-            <div class="nav-left">
-                <a href="index.php" class="logo">TechTrade</a>
-                <ul class="nav-links">
-                    <li><a href="browse.php">Buy</a></li>
-                    <li><a href="submitForm.php">Sell</a></li>
-                    <li><a href="reportForm.php">Report</a></li>
-                </ul>
-            </div>
-            <div class="nav-right">
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="account.php" class="nav-button">My Account</a>
-                    <a href="logout.php" class="nav-button">Logout</a>
-                <?php else: ?>
-                    <a href="login.php" class="nav-button">Login</a>
-                    <a href="register.php" class="nav-button">Register</a>
-                <?php endif; ?>
-            </div>
-        </nav>
-    </header>
-
+    <?php echo generate_navbar('admin'); ?>
+    
     <main class="container">
         <section class="admin-panel">
             <h1>User Management</h1>

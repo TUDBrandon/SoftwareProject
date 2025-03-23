@@ -1,7 +1,35 @@
 <?php
-session_start();
+require_once '../includes/common.php';
 $category = isset($_GET['category']) ? $_GET['category'] : '';
 require_once '../includes/functions.php';
+require_once '../includes/classes/Product.php';
+require_once '../includes/classes/ProductRepository.php';
+
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// Establish database connection
+try {
+    require_once __DIR__ . '/../src/DBconnect.php';
+} catch (Exception $e) {
+    error_log("Error: " . $e->getMessage());
+}
+
+// Create product repository
+$repository = new ProductRepository($connection);
+
+// Get products by category using the repository
+$hardwareProducts = $repository->getHardwareProducts();
+$consoleProducts = $repository->getConsoleProducts();
+$phoneProducts = $repository->getPhoneProducts();
+$gameProducts = $repository->getGameProducts();
+
+// Convert Product objects to arrays for display
+$hardware = $repository->toArrays($hardwareProducts);
+$consoles = $repository->toArrays($consoleProducts);
+$phones = $repository->toArrays($phoneProducts);
+$games = $repository->toArrays($gameProducts);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,35 +40,7 @@ require_once '../includes/functions.php';
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
 </head>
 <body>
-    <header>
-        <nav class="main-nav">
-            <div class="nav-left">
-                <a href="index.php" class="logo">TechTrade</a>
-                <ul class="nav-links">
-                    <li>
-                        <a href="browse.php">Buy</a>
-                        <ul class="dropdown">
-                            <li><a href="browse.php?category=hardware#hardware">Hardware</a></li>
-                            <li><a href="browse.php?category=consoles#consoles">Consoles</a></li>
-                            <li><a href="browse.php?category=phones#phones">Phones</a></li>
-                            <li><a href="browse.php?category=games#games">Games</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="submitForm.php">Sell</a></li>
-                    <li><a href="gaming.php">Gaming</a></li>
-                    <li><a href="hardware.php">Hardware</a></li>
-                    <li><a href="account.php">Account</a></li>
-                    <li><a href="contactUs.php">Contact Us</a></li>
-                </ul>
-            </div>
-            <div class="search-bar">
-                <form action="search.php" method="GET">
-                    <input type="search" name="q" placeholder="Search for games, phones, tech...">
-                    <button type="submit">Search</button>
-                </form>
-            </div>
-        </nav>
-    </header>
+    <?php echo generate_navbar('buy'); ?>
 
     <main>
         <section class="hero">
@@ -50,22 +50,22 @@ require_once '../includes/functions.php';
 
         <section id="hardware" class="category-section">
             <h2>Hardware</h2>
-            <?php echo display_product_carousel(get_hardware_products(), 'hardware'); ?>
+            <?php echo display_product_carousel($hardware, 'hardware'); ?>
         </section>
 
         <section id="consoles" class="category-section">
             <h2>Consoles</h2>
-            <?php echo display_product_carousel(get_console_products(), 'consoles'); ?>
+            <?php echo display_product_carousel($consoles, 'consoles'); ?>
         </section>
 
         <section id="phones" class="category-section">
             <h2>Phones</h2>
-            <?php echo display_product_carousel(get_phone_products(), 'phones'); ?>
+            <?php echo display_product_carousel($phones, 'phones'); ?>
         </section>
 
         <section id="games" class="category-section">
             <h2>Games</h2>
-            <?php echo display_product_carousel(get_game_products(), 'games'); ?>
+            <?php echo display_product_carousel($games, 'games'); ?>
         </section>
     </main>
 
