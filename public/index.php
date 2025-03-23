@@ -8,7 +8,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechTrade - Buy, Sell, Exchange Tech</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
@@ -68,7 +68,7 @@ session_start();
                         'price' => 499.99,
                         'image' => 'images/ps5.jpg',
                         'category' => 'Gaming',
-                        'link' => 'playstation5.php'
+                        'link' => 'ps5.php'
                     ],
                     [
                         'name' => 'MSI GTX 370',
@@ -82,7 +82,7 @@ session_start();
                         'price' => 349.99,
                         'image' => 'images/CPUi713th.jpg',
                         'category' => 'Hardware',
-                        'link' => 'intel-i7.php'
+                        'link' => 'CPUi713th.php'
                     ],
                     [
                         'name' => 'iPhone 14',
@@ -96,7 +96,7 @@ session_start();
                         'price' => 59.99,
                         'image' => 'images/CodBO6.jpg',
                         'category' => 'Consoles',
-                        'link' => 'cod-bo6.php'
+                        'link' => 'codbo6.php'
                     ]
                 ];
 
