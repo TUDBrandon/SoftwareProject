@@ -10,7 +10,7 @@ class Product {
     private $name;
     private $price;
     private $image;
-    private $category;
+    private $categoryId;
     private $link;
     
     /**
@@ -28,6 +28,14 @@ class Product {
         
         // Handle image path consistently
         $this->setImage($data['image'] ?? $data['image_path'] ?? '');
+    }
+
+    public function belongsToCategory(Category $category): bool {
+        return $this->categoryId === $category->getId();
+    }
+
+    public function getCategoryId(): int {
+        return $this->categoryId;
     }
     
     /**
