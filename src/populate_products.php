@@ -43,29 +43,29 @@ $allProducts = [
         'link' => 'product.php?id=1'
     ],
     [
-        'name' => 'Mechanical Keyboard',
+        'name' => 'MSI 370',
         'price' => 129.99,
         'image' => 'public/images/msi370.jpg',
         'category' => 'Hardware',
         'link' => 'product.php?id=2'
     ],
     [
-        'name' => 'Gaming Mouse',
-        'price' => 79.99,
+        'name' => 'Intel i9',
+        'price' => 299.99,
         'image' => 'public/images/inteli9.jpg',
         'category' => 'Hardware',
         'link' => 'product.php?id=3'
     ],
     [
-        'name' => 'SSD 2TB',
+        'name' => 'Intel i7',
         'price' => 229.99,
         'image' => 'public/images/CPUi713th.jpg',
         'category' => 'Hardware',
         'link' => 'product.php?id=4'
     ],
     [
-        'name' => 'Gaming Headset',
-        'price' => 149.99,
+        'name' => 'RTX 5090',
+        'price' => 1999.99,
         'image' => 'public/images/rtx5090.jpg',
         'category' => 'Hardware',
         'link' => 'product.php?id=5'
@@ -94,7 +94,7 @@ $allProducts = [
         'link' => 'product.php?id=8'
     ],
     [
-        'name' => 'Steam Deck',
+        'name' => 'Oculus 2',
         'price' => 399.99,
         'image' => 'public/images/oculus2.jpg',
         'category' => 'Consoles',
@@ -117,28 +117,28 @@ $allProducts = [
         'link' => 'product.php?id=11'
     ],
     [
-        'name' => 'Samsung Galaxy S24',
+        'name' => 'Samsung Galaxy S23 Ultra',
         'price' => 899.99,
         'image' => 'public/images/samsungGalazyS23Ultra.jpg',
         'category' => 'Phones',
         'link' => 'product.php?id=12'
     ],
     [
-        'name' => 'Google Pixel 8',
+        'name' => 'iPhone 15',
         'price' => 799.99,
         'image' => 'public/images/green_iphone15.jpg',
         'category' => 'Phones',
         'link' => 'product.php?id=13'
     ],
     [
-        'name' => 'OnePlus 12',
+        'name' => 'iPhone 14',
         'price' => 699.99,
         'image' => 'public/images/iphone14.jpg',
         'category' => 'Phones',
         'link' => 'product.php?id=14'
     ],
     [
-        'name' => 'Xiaomi 14',
+        'name' => 'iPhone 14 Black',
         'price' => 599.99,
         'image' => 'public/images/black_iphone14.jpg',
         'category' => 'Phones',
@@ -147,39 +147,75 @@ $allProducts = [
     
     // Game products
     [
-        'name' => 'Elden Ring',
+        'name' => 'Spiderman 2',
         'price' => 59.99,
         'image' => 'public/images/spiderman2PS5.png',
         'category' => 'Games',
         'link' => 'product.php?id=16'
     ],
     [
-        'name' => 'Cyberpunk 2077',
+        'name' => 'Tekken 8',
         'price' => 49.99,
         'image' => 'public/images/tekken8PS5.jpg',
         'category' => 'Games',
         'link' => 'product.php?id=17'
     ],
     [
-        'name' => 'The Legend of Zelda: TOTK',
+        'name' => 'Dogman',
         'price' => 59.99,
         'image' => 'public/images/dogmanSwitch.jpg',
         'category' => 'Games',
         'link' => 'product.php?id=18'
     ],
     [
-        'name' => 'God of War Ragnarök',
+        'name' => '2K25',
         'price' => 59.99,
         'image' => 'public/images/2k25PS5.jpg',
         'category' => 'Games',
         'link' => 'product.php?id=19'
     ],
     [
-        'name' => 'Red Dead Redemption 2',
+        'name' => 'Call of Duty: BO6',
         'price' => 39.99,
         'image' => 'public/images/CodBO6.jpg',
         'category' => 'Games',
         'link' => 'product.php?id=20'
+    ],
+    // Adding missing games
+    [
+        'name' => 'Grand Theft Auto V - Xbox',
+        'price' => 29.99,
+        'image' => 'public/images/GTAVXbox.jpg',
+        'category' => 'Games',
+        'link' => 'GTAVXbox.php'
+    ],
+    [
+        'name' => 'Hogwarts Legacy - Xbox',
+        'price' => 59.99,
+        'image' => 'public/images/hogwartslegacyXbox.jpg',
+        'category' => 'Games',
+        'link' => 'hogwarts-legacy-xbox.php'
+    ],
+    [
+        'name' => 'It Takes Two - Nintendo Switch',
+        'price' => 39.99,
+        'image' => 'public/images/ittakes2Switch.jpg',
+        'category' => 'Games',
+        'link' => 'it-takes-two-switch.php'
+    ],
+    [
+        'name' => 'Instant Sports - Nintendo Switch',
+        'price' => 29.99,
+        'image' => 'public/images/instantsportsSwitch.jpg',
+        'category' => 'Games',
+        'link' => 'instant-sports-switch.php'
+    ],
+    [
+        'name' => 'Steam Gift Card',
+        'price' => 50.00,
+        'image' => 'public/images/gitcardSteam.jpeg',
+        'category' => 'Games',
+        'link' => 'steam-giftcard.php'
     ]
 ];
 

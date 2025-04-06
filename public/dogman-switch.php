@@ -1,4 +1,5 @@
 <?php
+require_once '../includes/common.php';
 require_once '../includes/functions.php';
 
 // Use our create_product_page function to generate the content

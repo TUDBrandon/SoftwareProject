@@ -1,5 +1,6 @@
 <?php
 require_once '../includes/functions.php';
+require_once '../includes/common.php';
 init_session();
 
 // Unset all session variables

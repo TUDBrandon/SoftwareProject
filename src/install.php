@@ -7,7 +7,8 @@
  */
 
 require_once '../includes/functions.php';
-require_once '../src/init_db.php';
+require_once '../includes/common.php';
+require_once './init_db.php';
 init_session();
 
 // Check if user is logged in as admin
@@ -19,7 +20,7 @@ $error_message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['force_install']) || $is_admin)) {
     try {
         // Include the database initialization script
-        require_once '../src/init_db.php';
+        require_once './init_db.php';
         $install_complete = true;
     } catch (Exception $e) {
         $error_message = "Installation failed: " . $e->getMessage();
@@ -33,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['force_install']) || 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Database Installation - TechTrade</title>
-    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../public/css/style.css?v=<?php echo time(); ?>">
     <style>
         .install-container {
             max-width: 800px;
@@ -88,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['force_install']) || 
             <div class="success">
                 <h2>Installation Complete!</h2>
                 <p>The database tables have been created successfully.</p>
-                <p><a href="index.php" class="btn">Go to Homepage</a></p>
+                <p><a href="../public/index.php" class="btn">Go to Homepage</a></p>
             </div>
         <?php elseif (!empty($error_message)): ?>
             <div class="error">
@@ -129,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['force_install']) || 
                 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Install Database</button>
-                    <a href="index.php" class="btn">Cancel</a>
+                    <a href="../public/index.php" class="btn">Cancel</a>
                 </div>
             </form>
         <?php endif; ?>
@@ -144,10 +145,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['force_install']) || 
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <ul>
-                    <li><a href="about.php">About Us</a></li>
-                    <li><a href="contact.php">Contact</a></li>
-                    <li><a href="terms.php">Terms of Service</a></li>
-                    <li><a href="privacy.php">Privacy Policy</a></li>
+                    <li><a href="../public/about.php">About Us</a></li>
+                    <li><a href="../public/contact.php">Contact</a></li>
+                    <li><a href="../public/terms.php">Terms of Service</a></li>
+                    <li><a href="../public/privacy.php">Privacy Policy</a></li>
                 </ul>
             </div>
             <div class="footer-section">

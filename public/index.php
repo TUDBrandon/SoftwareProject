@@ -2,6 +2,13 @@
 session_start();
 require_once '../includes/common.php';
 require_once '../includes/functions.php';
+
+// Establish database connection
+try {
+    require_once __DIR__ . '/../src/DBconnect.php';
+} catch (Exception $e) {
+    error_log("Error: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,52 +43,15 @@ require_once '../includes/functions.php';
             <h2>Top Selling Products</h2>
             <div class="product-grid">
                 <?php
-                $bestsellers = [
-                    [
-                        'name' => 'PlayStation 5',
-                        'price' => 499.99,
-                        'image' => 'images/ps5.jpg',
-                        'category' => 'Gaming',
-                        'link' => 'ps5.php'
-                    ],
-                    [
-                        'name' => 'MSI GTX 370',
-                        'price' => 499.99,
-                        'image' => 'images/msi370.jpg',
-                        'category' => 'Hardware',
-                        'link' => 'msi-rx570.php'
-                    ],
-                    [
-                        'name' => 'CPU i7 13th Gen',
-                        'price' => 349.99,
-                        'image' => 'images/CPUi713th.jpg',
-                        'category' => 'Hardware',
-                        'link' => 'CPUi713th.php'
-                    ],
-                    [
-                        'name' => 'iPhone 14',
-                        'price' => 499.99,
-                        'image' => 'images/iphone14.jpg',
-                        'category' => 'Hardware',
-                        'link' => 'iphone14.php'
-                    ],
-                    [
-                        'name' => 'COD Black Ops 6',
-                        'price' => 59.99,
-                        'image' => 'images/CodBO6.jpg',
-                        'category' => 'Consoles',
-                        'link' => 'codbo6.php'
-                    ]
-                ];
+                $bestsellers = get_bestselling_products(5);
 
-                for($i = 0; $i < count($bestsellers); $i++) {
-                    $product = $bestsellers[$i];
+                foreach($bestsellers as $product) {
                     echo "<div class='product-card'>";
                     echo "<a href='{$product['link']}' class='product-link'>";
                     echo "<img src='{$product['image']}' alt='{$product['name']}'>";
                     echo "<h3>{$product['name']}</h3>";
                     echo "<p class='category'>{$product['category']}</p>";
-                    echo "<p class='price'>€{$product['price']}</p>";
+                    echo "<p class='price'>€" . number_format($product['price'], 2) . "</p>";
                     echo "</a>";
                     echo "<button class='buy-now'>Buy Now</button>";
                     echo "</div>";
