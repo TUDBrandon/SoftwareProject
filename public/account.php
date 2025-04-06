@@ -2,6 +2,12 @@
 require_once '../includes/functions.php';
 require_once '../src/DBconnect.php';
 require_once '../includes/common.php';
+require_once '../includes/classes/User.php';
+require_once '../includes/classes/Customer.php';
+require_once '../includes/classes/Submission.php';
+require_once '../includes/classes/Report.php';
+require_once '../includes/classes/SubmissionRepository.php';
+require_once '../includes/classes/ReportRepository.php';
 init_session();
 
 // Check if user is logged in
@@ -33,26 +39,25 @@ try {
     $stmt->execute();
     $user_data = $stmt->fetch();
     
-    // Get user submissions if user is a regular user
+    // Get user submissions and reports if user is a regular user
     if ($user_type === 'user') {
-        $stmt = $connection->prepare("SELECT * FROM submission WHERE username = :username ORDER BY timestamps DESC");
-        $stmt->bindParam(':username', $user_data['username']);
-        $stmt->execute();
-        $submissions = $stmt->fetchAll();
+        // Create Customer object
+        $customer = new Customer([
+            'id' => $user_id,
+            'username' => $user_data['username'],
+            'email' => $user_data['email'],
+            'first_name' => $user_data['first_name']
+        ]);
         
-        // Get user reports
-        $stmt = $connection->prepare("SELECT * FROM report WHERE username = :username ORDER BY timestamps DESC");
-        $stmt->bindParam(':username', $user_data['username']);
-        $stmt->execute();
-        $reports = $stmt->fetchAll();
+        // Get customer's submissions and reports using the new methods
+        $submissions = $customer->getSubmissions();
+        $reports = $customer->getReports();
     }
     
     // Get reports assigned to employee if user is an employee
     if ($user_type === 'employee') {
-        $stmt = $connection->prepare("SELECT * FROM report WHERE employee_id = :employee_id ORDER BY timestamps DESC");
-        $stmt->bindParam(':employee_id', $user_id);
-        $stmt->execute();
-        $reports = $stmt->fetchAll();
+        $reportRepository = new ReportRepository($connection);
+        $reports = $reportRepository->getReportsByEmployeeId($user_id);
     }
     
 } catch (PDOException $e) {
@@ -117,50 +122,97 @@ try {
                                 <th>ID</th>
                                 <th>Title</th>
                                 <th>Category</th>
-                                <th>Date</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($submissions as $submission): ?>
                                 <tr>
-                                    <td><?= escape($submission['submission_id']) ?></td>
-                                    <td><?= escape($submission['title']) ?></td>
-                                    <td><?= escape($submission['category']) ?></td>
-                                    <td><?= escape(date('Y-m-d', strtotime($submission['timestamps']))) ?></td>
-                                    <td><?= escape($submission['status_update']) ?></td>
+                                    <td><?= escape($submission->getId()) ?></td>
+                                    <td><?= escape($submission->getTitle()) ?></td>
+                                    <td><?= escape($submission->getCategory()) ?></td>
+                                    <td><?= escape($submission->getStatus()) ?></td>
+                                    <td>
+                                        <a href="view_submission.php?id=<?= $submission->getId() ?>" class="btn btn-sm">View</a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                    <p><a href="submitForm.php" class="btn">Submit New Item</a></p>
+                </div>
+            <?php elseif ($user_type === 'user'): ?>
+                <div class="account-submissions">
+                    <h3>My Submissions</h3>
+                    <p>You haven't submitted any items yet.</p>
+                    <p><a href="submitForm.php" class="btn">Submit an Item</a></p>
                 </div>
             <?php endif; ?>
             
-            <?php if (!empty($reports)): ?>
+            <?php if ($user_type === 'user' && !empty($reports)): ?>
                 <div class="account-reports">
-                    <h3><?= $user_type === 'employee' ? 'Assigned Reports' : 'My Reports' ?></h3>
+                    <h3>My Reports</h3>
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Title</th>
-                                <th>Date Submitted</th>
+                                <th>Date</th>
                                 <th>Status</th>
-                                <?php if ($user_type === 'employee'): ?>
-                                    <th>Submitted By</th>
-                                <?php endif; ?>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($reports as $report): ?>
                                 <tr>
-                                    <td><?= escape($report['report_id']) ?></td>
-                                    <td><?= escape($report['title']) ?></td>
-                                    <td><?= escape(date('Y-m-d', strtotime($report['timestamps']))) ?></td>
-                                    <td><?= escape($report['status_update']) ?></td>
-                                    <?php if ($user_type === 'employee'): ?>
-                                        <td><?= escape($report['username']) ?></td>
-                                    <?php endif; ?>
+                                    <td><?= escape($report->getId()) ?></td>
+                                    <td><?= escape($report->getTitle()) ?></td>
+                                    <td><?= escape($report->getDate()) ?></td>
+                                    <td><?= escape($report->getStatus()) ?></td>
+                                    <td>
+                                        <a href="view_report.php?id=<?= $report->getId() ?>" class="btn btn-sm">View</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <p><a href="reportForm.php" class="btn">Report an Issue</a></p>
+                </div>
+            <?php elseif ($user_type === 'user'): ?>
+                <div class="account-reports">
+                    <h3>My Reports</h3>
+                    <p>You haven't submitted any reports yet.</p>
+                    <p><a href="reportForm.php" class="btn">Report an Issue</a></p>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ($user_type === 'employee' && !empty($reports)): ?>
+                <div class="account-reports">
+                    <h3>Assigned Reports</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Submitted By</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($reports as $report): ?>
+                                <tr>
+                                    <td><?= escape($report->getId()) ?></td>
+                                    <td><?= escape($report->getTitle()) ?></td>
+                                    <td><?= escape($report->getDate()) ?></td>
+                                    <td><?= escape($report->getStatus()) ?></td>
+                                    <td><?= escape($report->getCustomerName()) ?></td>
+                                    <td>
+                                        <a href="view_report.php?id=<?= $report->getId() ?>" class="btn btn-sm">View</a>
+                                        <a href="update_report.php?id=<?= $report->getId() ?>" class="btn btn-sm">Update</a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

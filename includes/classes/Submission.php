@@ -16,6 +16,7 @@ class Submission {
     private $images;
     private $status;
     private $managedBy;
+    private $customerId; // New property to store customer ID
     
     // Status constants
     const STATUS_PENDING = 'Pending';
@@ -38,6 +39,7 @@ class Submission {
         $this->images = $data['images'] ?? $data['item_image'] ?? '';
         $this->status = $data['status'] ?? $data['status_update'] ?? self::STATUS_PENDING;
         $this->managedBy = $data['managed_by'] ?? null;
+        $this->customerId = $data['customer_id'] ?? null; // Initialize customer ID
     }
     
     /**
@@ -188,6 +190,26 @@ class Submission {
     }
     
     /**
+     * Get customer ID
+     * 
+     * @return int|null
+     */
+    public function getCustomerId() {
+        return $this->customerId;
+    }
+    
+    /**
+     * Set customer ID
+     * 
+     * @param int $customerId
+     * @return self
+     */
+    public function setCustomerId($customerId) {
+        $this->customerId = $customerId;
+        return $this;
+    }
+    
+    /**
      * Update submission status
      * 
      * @param string $status New status
@@ -227,7 +249,8 @@ class Submission {
             'description' => $this->description,
             'images' => $this->images,
             'status' => $this->status,
-            'managed_by' => $this->managedBy
+            'managed_by' => $this->managedBy,
+            'customer_id' => $this->customerId
         ];
     }
 }

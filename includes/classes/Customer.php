@@ -84,6 +84,8 @@ class Customer extends User {
      */
     public function submitSubmission(array $data) {
         $data['customer_id'] = $this->getId();
+        $data['customer_name'] = $this->getUsername();
+        $data['email'] = $this->getEmail();
         return new Submission($data);
     }
     
@@ -94,7 +96,44 @@ class Customer extends User {
      * @return Report
      */
     public function createReport(array $data) {
-        $data['user_id'] = $this->getId();
+        $data['customer_id'] = $this->getId();
+        $data['customer_name'] = $this->getUsername();
         return new Report($data);
+    }
+    
+    /**
+     * Get customer's submissions
+     * 
+     * @return array Array of Submission objects
+     */
+    public function getSubmissions() {
+        try {
+            require_once __DIR__ . '/../../src/DBconnect.php';
+            global $connection;
+            
+            $repository = new SubmissionRepository($connection);
+            return $repository->getSubmissionsByCustomerId($this->getId());
+        } catch (Exception $e) {
+            error_log("Error retrieving customer submissions: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Get customer's reports
+     * 
+     * @return array Array of Report objects
+     */
+    public function getReports() {
+        try {
+            require_once __DIR__ . '/../../src/DBconnect.php';
+            global $connection;
+            
+            $repository = new ReportRepository($connection);
+            return $repository->getReportsByCustomerId($this->getId());
+        } catch (Exception $e) {
+            error_log("Error retrieving customer reports: " . $e->getMessage());
+            return [];
+        }
     }
 }

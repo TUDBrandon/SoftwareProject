@@ -51,10 +51,18 @@ function save_submit($data, $files) {
     }
     
     try {
+        // Get customer_id from session or from data
+        $customer_id = isset($data['customer_id']) ? $data['customer_id'] : ($_SESSION['user_id'] ?? null);
+        
+        // Check if connection is valid
+        if (!$connection || !($connection instanceof PDO)) {
+            throw new Exception("Database connection is not available");
+        }
+        
         // Insert submission into database
         $stmt = $connection->prepare("
-            INSERT INTO submission (username, email, title, category, description, images, status_update)
-            VALUES (:username, :email, :title, :category, :description, :images, 'Pending')
+            INSERT INTO submission (username, email, title, category, description, images, status_update, customer_id)
+            VALUES (:username, :email, :title, :category, :description, :images, 'Pending', :customer_id)
         ");
         
         $stmt->bindParam(':username', $data['customer_name']);
@@ -63,6 +71,7 @@ function save_submit($data, $files) {
         $stmt->bindParam(':category', $data['category']);
         $stmt->bindParam(':description', $data['description']);
         $stmt->bindParam(':images', $image_name);
+        $stmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
         
         $stmt->execute();
         
@@ -72,7 +81,8 @@ function save_submit($data, $files) {
     } catch (PDOException $e) {
         // Log the error
         error_log("Database error in save_submit: " . $e->getMessage());
-        throw new Exception("Failed to save submission: " . $e->getMessage());
+        // Pass the actual error message to the Exception
+        throw new Exception($e->getMessage());
     }
 }
 ?>

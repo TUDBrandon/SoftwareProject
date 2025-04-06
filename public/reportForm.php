@@ -1,16 +1,61 @@
 <?php
+require_once '../includes/common.php';
 require_once '../includes/functions.php';
 require_once '../includes/handle_report.php';
+require_once '../src/DBconnect.php';
 init_session();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to login page with a message
+    $_SESSION['login_message'] = "You must be logged in to submit a report.";
+    header("Location: login.php");
+    exit;
+}
+
+// Check if user is an employee (not allowed to create reports)
+if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'employee') {
+    // Redirect to account page with a message
+    $_SESSION['error_message'] = "Employees cannot submit reports. Please contact an administrator.";
+    header("Location: account.php");
+    exit;
+}
 
 $success_message = '';
 $error_messages = [];
+
+// Get user data for pre-filling the form
+$user_data = [];
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $user_type = $_SESSION['user_type'] ?? 'user';
+    
+    try {
+        // Get user data based on user type
+        switch ($user_type) {
+            case 'admin':
+                $stmt = $connection->prepare("SELECT * FROM admins WHERE admin_id = :id");
+                break;
+            default:
+                $stmt = $connection->prepare("SELECT * FROM users WHERE user_id = :id");
+        }
+        
+        $stmt->bindParam(':id', $user_id);
+        $stmt->execute();
+        $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        $error_messages[] = "Database error: " . $e->getMessage();
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = validate_report_form($_POST, $_FILES);
     
     if (empty($errors)) {
         try {
+            // Add customer_id to the report data
+            $_POST['customer_id'] = $_SESSION['user_id'];
+            
             $report_id = save_report($_POST, $_FILES);
             $success_message = "Report submitted successfully! Your report ID is: " . $report_id;
             
@@ -58,8 +103,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <form action="" method="POST" enctype="multipart/form-data">
                 <?php
-                // Customer Information
-                echo create_form_field('customer_name', 'Your Full Name', 'text', true, $_POST['customer_name'] ?? '');
+                // Customer Information - Pre-fill with user data if available
+                $customer_name = $user_data['username'] ?? $user_data['first_name'] ?? ($_POST['customer_name'] ?? '');
+                echo create_form_field('customer_name', 'Your Full Name', 'text', true, $customer_name);
                 echo create_form_field('employee_code', 'Employee Code (found on receipt)', 'text', true, $_POST['employee_code'] ?? '');
                 
                 // Item Information

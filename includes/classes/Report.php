@@ -19,6 +19,7 @@ class Report {
     private $receiptImage;
     private $status;
     private $employeeId;
+    private $customerId;
     
     // Status constants
     const STATUS_PENDING = 'Pending';
@@ -44,6 +45,7 @@ class Report {
         $this->receiptImage = $data['receipt_image'] ?? '';
         $this->status = $data['status'] ?? $data['status_update'] ?? self::STATUS_PENDING;
         $this->employeeId = $data['employee_id'] ?? null;
+        $this->customerId = $data['customer_id'] ?? null;
     }
     
     /**
@@ -286,6 +288,26 @@ class Report {
     }
     
     /**
+     * Get customer ID
+     * 
+     * @return int|null
+     */
+    public function getCustomerId() {
+        return $this->customerId;
+    }
+    
+    /**
+     * Set customer ID
+     * 
+     * @param int $customerId
+     * @return self
+     */
+    public function setCustomerId($customerId) {
+        $this->customerId = $customerId;
+        return $this;
+    }
+    
+    /**
      * Resolve report
      * 
      * @param int $employeeId ID of employee resolving the report
@@ -316,7 +338,8 @@ class Report {
             'item_image' => $this->itemImage,
             'receipt_image' => $this->receiptImage,
             'status' => $this->status,
-            'employee_id' => $this->employeeId
+            'employee_id' => $this->employeeId,
+            'customer_id' => $this->customerId
         ];
     }
 }

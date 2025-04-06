@@ -50,19 +50,22 @@ CREATE TABLE products (
 CREATE TABLE submission (
     submission_id INT AUTO_INCREMENT PRIMARY KEY,
     timestamps DATETIME DEFAULT CURRENT_TIMESTAMP,
+    customer_id INT,
     username VARCHAR(45) NOT NULL,
     email VARCHAR(45) NOT NULL,
     title VARCHAR(45) NOT NULL,
     category VARCHAR(45) NOT NULL,
     description VARCHAR(200) NOT NULL,
     images BLOB,
-    status_update VARCHAR(45) DEFAULT 'Pending'
+    status_update VARCHAR(45) DEFAULT 'Pending',
+    FOREIGN KEY (customer_id) REFERENCES users(user_id)
 );
 
 -- Create report table
 CREATE TABLE report (
     report_id INT AUTO_INCREMENT PRIMARY KEY,
     timestamps DATETIME DEFAULT CURRENT_TIMESTAMP,
+    customer_id INT,
     username VARCHAR(45) NOT NULL,
     title VARCHAR(45) NOT NULL,
     date DATETIME,
@@ -73,6 +76,7 @@ CREATE TABLE report (
     receipt_image BLOB,
     status_update VARCHAR(45) DEFAULT 'Pending',
     employee_id INT,
+    FOREIGN KEY (customer_id) REFERENCES users(user_id),
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 

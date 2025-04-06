@@ -1,23 +1,69 @@
 <?php
+require_once '../includes/common.php';
 require_once '../includes/functions.php';
 require_once '../includes/handle_submit.php';
+require_once '../src/DBconnect.php';
 init_session();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to login page with a message
+    $_SESSION['login_message'] = "You must be logged in to submit an item.";
+    header("Location: login.php");
+    exit;
+}
+
+// Check if user is an employee (not allowed to create submissions)
+if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'employee') {
+    // Redirect to account page with a message
+    $_SESSION['error_message'] = "Employees cannot submit items. Please contact an administrator.";
+    header("Location: account.php");
+    exit;
+}
 
 $success_message = '';
 $error_messages = [];
+
+// Get user data for pre-filling the form
+$user_data = [];
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $user_type = $_SESSION['user_type'] ?? 'user';
+    
+    try {
+        // Get user data based on user type
+        switch ($user_type) {
+            case 'admin':
+                $stmt = $connection->prepare("SELECT * FROM admins WHERE admin_id = :id");
+                break;
+            default:
+                $stmt = $connection->prepare("SELECT * FROM users WHERE user_id = :id");
+        }
+        
+        $stmt->bindParam(':id', $user_id);
+        $stmt->execute();
+        $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        $error_messages[] = "Database error: " . $e->getMessage();
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = validate_submit_form($_POST, $_FILES);
     
     if (empty($errors)) {
         try {
+            // Add customer_id to the submission data
+            $_POST['customer_id'] = $_SESSION['user_id'];
+            
             $item_id = save_submit($_POST, $_FILES);
             $success_message = "Item submitted successfully! Your item ID is: " . $item_id;
             
             // Clear form data on success
             $_POST = [];
         } catch (Exception $e) {
-            $error_messages[] = "An error occurred while saving your submission. Please try again.";
+            // Display the actual error message
+            $error_messages[] = "Error: " . $e->getMessage();
         }
     } else {
         $error_messages = $errors;
@@ -58,9 +104,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <form action="" method="POST" enctype="multipart/form-data">
                 <?php
-                // Customer Information
-                echo create_form_field('customer_name', 'Your Full Name', 'text', true, $_POST['customer_name'] ?? '');
-                echo create_form_field('email', 'Email Address', 'email', true, $_POST['email'] ?? '');
+                // Customer Information - Pre-fill with user data if available
+                $customer_name = $user_data['username'] ?? $user_data['first_name'] ?? ($_POST['customer_name'] ?? '');
+                $email = $user_data['email'] ?? ($_POST['email'] ?? '');
+                
+                echo create_form_field('customer_name', 'Your Full Name', 'text', true, $customer_name);
+                echo create_form_field('email', 'Email Address', 'email', true, $email);
                 
                 // Item Information
                 echo create_form_field('title', 'Item name', 'text', true, $_POST['title'] ?? '');

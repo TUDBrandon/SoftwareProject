@@ -81,14 +81,17 @@ function save_report($data, $files) {
         // Format date for database
         $date = date('Y-m-d H:i:s', strtotime($data['date']));
         
+        // Get customer_id from session or from data
+        $customer_id = isset($data['customer_id']) ? $data['customer_id'] : ($_SESSION['user_id'] ?? null);
+        
         // Insert report into database
         $stmt = $connection->prepare("
             INSERT INTO report (
                 username, title, date, expectation, description, 
-                technical, item_image, receipt_image, status_update, employee_id
+                technical, item_image, receipt_image, status_update, employee_id, customer_id
             ) VALUES (
                 :username, :title, :date, :expectation, :description, 
-                :technical, :item_image, :receipt_image, 'Pending', :employee_id
+                :technical, :item_image, :receipt_image, 'Pending', :employee_id, :customer_id
             )
         ");
         
@@ -101,6 +104,7 @@ function save_report($data, $files) {
         $stmt->bindParam(':item_image', $item_image_name);
         $stmt->bindParam(':receipt_image', $receipt_image_name);
         $stmt->bindParam(':employee_id', $employee_id);
+        $stmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
         
         $stmt->execute();
         
