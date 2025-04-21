@@ -58,6 +58,17 @@ class Report {
     }
     
     /**
+     * Set report ID
+     * 
+     * @param int $id
+     * @return self
+     */
+    public function setId($id) {
+        $this->id = $id;
+        return $this;
+    }
+    
+    /**
      * Get customer name
      * 
      * @return string

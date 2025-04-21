@@ -2,12 +2,12 @@
 require_once __DIR__ . '/../../includes/handle_submit.php';
 require_once __DIR__ . '/../../includes/handle_report.php';
 
-class ValidatonTest {
+class ValidationTest {
     public function runTests() {
         $this->testSubmissionValidation();
         $this->testReportValidation();
 
-        echo "All Validation Tests Passed!\n"
+        echo "All Validation Tests Passed!\n";
     }
 
     private function testSubmissionValidation() {
@@ -15,12 +15,12 @@ class ValidatonTest {
         $data = [];
         $files = [];
         $errors = validate_submit_form($data, $files);
-        asset(count($errors) > 0, "Empty data should cause validation error");
+        assert(count($errors) > 0, "Empty data should cause validation error");
 
-        //Test Case: Missing reuired fields
+        //Test Case: Missing required fields
         $data = ['customer_name' => 'Test User'];
-        $errors = validate_submit_for($date, $files);
-        asset(count($errors) > 0, "Missing required fields should cause validation error");
+        $errors = validate_submit_form($data, $files);
+        assert(count($errors) > 0, "Missing required fields should cause validation error");
 
         //Test Case: Invalid Email
         $data = [
@@ -59,3 +59,4 @@ class ValidatonTest {
         echo "Report validation tests passed!\n";
     }
 }
+?>

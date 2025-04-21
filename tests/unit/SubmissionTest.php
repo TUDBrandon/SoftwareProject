@@ -38,7 +38,7 @@ class SubmissionTest {
     }
     
     private function testStatusUpdate() {
-        $this->submission->setStatus('Under Review');
+        $this->submission->updateStatus('Under Review', 2);
         assert($this->submission->getStatus() === 'Under Review', "Status update failed");
         
         echo "Submission status update tests passed!\n";

@@ -1,5 +1,4 @@
 <?php
-// tests/unit/ReportRepositoryTest.php
 require_once __DIR__ . '/../../includes/classes/Report.php';
 require_once __DIR__ . '/../../includes/classes/ReportRepository.php';
 
@@ -63,7 +62,4 @@ class ReportRepositoryTest {
         echo "Save Report Tests Passed!\n";
     }
 }
-
-// Don't run tests automatically when included
-// Let run_tests.php handle this
 ?>

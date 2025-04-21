@@ -1,9 +1,9 @@
 <?php
-// tests/unit/SubmissionRepositoryTest.php
+// tests/unit/SubmssionRepositoryTest.php
 require_once __DIR__ . '/../../includes/classes/Submission.php';
 require_once __DIR__ . '/../../includes/classes/SubmissionRepository.php';
 
-class SubmissionRepositoryTest {
+class SubmssionRepositoryTest {
     private $repository;
     private $testConnection;
 
@@ -44,7 +44,7 @@ class SubmissionRepositoryTest {
         echo "All SubmissionRepository Tests Passed!\n";
     }
 
-    private function testSaveSubmisssion() {
+    private function testSaveSubmission() {
         $submission = new Submission([
             'customer_name' => 'Test User',
             'email' => 'test@example.com',
@@ -56,7 +56,7 @@ class SubmissionRepositoryTest {
 
         $result = $this->repository->saveSubmission($submission);
         assert($this->testConnection->executed, "Execute should be called when saving a submission");
-        assert($this->testConncetion->boundParams[':customer_id'] === 1, "Customer ID should be bound correctly");
+        assert($this->testConnection->boundParams[':customer_id'] === 1, "Customer ID should be bound correctly");
 
         echo "Save Submission Tests Passed!\n";
     }
