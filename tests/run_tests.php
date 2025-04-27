@@ -5,6 +5,7 @@ require_once __DIR__ . '/unit/ReportRepositoryTest.php';
 require_once __DIR__ . '/unit/ReportTest.php';
 require_once __DIR__ . '/unit/SubmissionTest.php';
 require_once __DIR__ . '/basisPath/CustomerPathTest.php';
+require_once __DIR__ . '/basisPath/SubmissionActionPathTest.php';
 require_once __DIR__ . '/equivalence/validationTest.php';
 
 
@@ -31,8 +32,11 @@ $submissionTest->runTests();
 $customerPathTest = new CustomerPathTest();
 $customerPathTest->runTests();
 
+$submissionActionPathTest = new SubmissionActionPathTest();
+$submissionActionPathTest->runTests();
+
 $validationTest = new ValidationTest();
 $validationTest->runTests();
 
-echo "All tests passed!\n";
+echo ("All tests passed!\n");
 ?>

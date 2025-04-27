@@ -16,6 +16,12 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+// Check if user is an employee and redirect to employee dashboard
+if (is_employee()) {
+    header("Location: employee_dashboard.php");
+    exit;
+}
+
 $user_id = $_SESSION['user_id'];
 $user_type = $_SESSION['user_type'] ?? 'user';
 $user_data = [];

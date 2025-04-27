@@ -192,12 +192,34 @@ class Submission {
     }
     
     /**
+     * Set submission status directly (for internal use)
+     * 
+     * @param string $status
+     * @return self
+     */
+    public function setStatus(string $status) {
+        $this->status = $status;
+        return $this;
+    }
+    
+    /**
      * Get ID of employee managing this submission
      * 
      * @return int|null
      */
     public function getManagedBy() {
         return $this->managedBy;
+    }
+    
+    /**
+     * Set managing employee ID
+     * 
+     * @param int $employeeId
+     * @return self
+     */
+    public function setManagedBy(int $employeeId) {
+        $this->managedBy = $employeeId;
+        return $this;
     }
     
     /**

@@ -12,12 +12,35 @@ function validate_report_form($data, $files) {
             $errors[] = ucfirst(str_replace('_', ' ', $field)) . ' is required';
         }
     }
+
+    // Validate field lengths
+    if (!empty($data['title']) && strlen($data['title']) > 45) {
+        $errors[] = 'Title must be less than 45 characters';
+    }
+    
+    if (!empty($data['expectation']) && strlen($data['expectation']) > 200) {
+        $errors[] = 'Expectation must be less than 200 characters';
+    }
+    
+    if (!empty($data['description']) && strlen($data['description']) > 200) {
+        $errors[] = 'Description must be less than 200 characters';
+    }
+    
+    if (!empty($data['technical']) && strlen($data['technical']) > 200) {
+        $errors[] = 'Technical details must be less than 200 characters';
+    }
     
     // Validate date
     if (!empty($data['date'])) {
         $purchase_date = strtotime($data['date']);
         if ($purchase_date > time()) {
             $errors[] = 'Purchase date cannot be in the future';
+        }
+        
+        // Add validation for dates older than 5 years
+        $five_years_ago = strtotime('-5 years');
+        if ($purchase_date < $five_years_ago) {
+            $errors[] = 'Purchase date must be within the last 5 years';
         }
     }
     

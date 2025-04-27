@@ -4,6 +4,8 @@
  * 
  * Handles database operations for reports
  */
+require_once __DIR__ . '/Report.php';
+
 class ReportRepository {
     private $connection;
     

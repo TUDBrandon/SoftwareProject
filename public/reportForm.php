@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['customer_id'] = $_SESSION['user_id'];
             
             $report_id = save_report($_POST, $_FILES);
-            $success_message = "Report submitted successfully! Your report ID is: " . $report_id;
+            $success_message = "Report submitted successfully!";
             
             // Clear form data on success
             $_POST = [];

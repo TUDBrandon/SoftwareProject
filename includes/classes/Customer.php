@@ -5,6 +5,12 @@
  * Represents a customer user in the TechTrade system
  * Inherits from User class
  */
+require_once __DIR__ . '/User.php';
+require_once __DIR__ . '/Submission.php';
+require_once __DIR__ . '/Report.php';
+require_once __DIR__ . '/SubmissionRepository.php';
+require_once __DIR__ . '/ReportRepository.php';
+
 class Customer extends User {
     // Additional properties specific to customers
     private $address;

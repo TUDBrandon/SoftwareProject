@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Report class
@@ -258,22 +259,12 @@ class Report {
     }
     
     /**
-     * Set report status
+     * Set report status directly (for internal use)
      * 
      * @param string $status
      * @return self
      */
     public function setStatus(string $status) {
-        // Validate status
-        if (!in_array($status, [
-            self::STATUS_PENDING,
-            self::STATUS_UNDER_REVIEW,
-            self::STATUS_RESOLVED,
-            self::STATUS_REJECTED
-        ])) {
-            return $this;
-        }
-        
         $this->status = $status;
         return $this;
     }
@@ -290,7 +281,7 @@ class Report {
     /**
      * Set employee ID
      * 
-     * @param int|null $employeeId
+     * @param int $employeeId
      * @return self
      */
     public function setEmployeeId($employeeId) {
@@ -319,15 +310,15 @@ class Report {
     }
     
     /**
-     * Resolve report
+     * Resolve a report
      * 
      * @param int $employeeId ID of employee resolving the report
-     * @param string $resolution Resolution description
+     * @param string $resolution Resolution notes
      * @return bool
      */
     public function resolve(int $employeeId, string $resolution) {
+        $this->status = ($resolution === 'reject') ? self::STATUS_REJECTED : self::STATUS_RESOLVED;
         $this->employeeId = $employeeId;
-        $this->status = self::STATUS_RESOLVED;
         return true;
     }
     

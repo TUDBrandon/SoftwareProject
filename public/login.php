@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         header("Location: admin/dashboard.php");
                         break;
                     case 'employee':
-                        header("Location: employee/dashboard.php");
+                        header("Location: employee_dashboard.php");
                         break;
                     default:
                         header("Location: index.php");

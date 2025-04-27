@@ -253,4 +253,140 @@ function get_bestselling_products($limit = 5) {
     }
 }
 
+/**
+ * Process employee action on a submission
+ * 
+ * @param int $submission_id The submission ID
+ * @param string $action Either 'approve' or 'reject'
+ * @param int $employee_id The employee ID
+ * @return bool Success or failure
+ */
+function process_submission_action($submission_id, $action, $employee_id) {
+    try {
+        require_once __DIR__ . '/classes/User.php';
+        require_once __DIR__ . '/classes/Submission.php';
+        require_once __DIR__ . '/classes/SubmissionRepository.php';
+        require_once __DIR__ . '/classes/Employee.php';
+        
+        $repo = new SubmissionRepository();
+        $submission = $repo->getSubmissionById($submission_id);
+        
+        if (!$submission) {
+            return false;
+        }
+        
+        $employee = new Employee(['id' => $employee_id]);
+        $status = ($action === 'approve') ? 'Approved' : 'Rejected';
+        
+        // Update the submission object
+        if ($employee->manageSubmission($submission, $status)) {
+            // Save the updated submission to the database
+            return $repo->updateSubmissionStatus($submission_id, $status);
+        }
+        
+        return false;
+    } catch (Exception $e) {
+        error_log("Error processing submission action: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Process employee action on a report
+ * 
+ * @param int $report_id The report ID
+ * @param string $action Either 'resolve' or 'reject'
+ * @param int $employee_id The employee ID
+ * @param string $resolution Optional resolution notes
+ * @return bool Success or failure
+ */
+function process_report_action($report_id, $action, $employee_id, $resolution = '') {
+    try {
+        require_once __DIR__ . '/classes/User.php';
+        require_once __DIR__ . '/classes/Report.php';
+        require_once __DIR__ . '/classes/ReportRepository.php';
+        require_once __DIR__ . '/classes/Employee.php';
+        
+        $repo = new ReportRepository();
+        $report = $repo->getReportById($report_id);
+        
+        if (!$report) {
+            return false;
+        }
+        
+        $employee = new Employee(['id' => $employee_id]);
+        $status = ($action === 'resolve') ? 'Resolved' : 'Rejected';
+        
+        // Update the report object
+        if ($employee->handleReport($report, $action)) {
+            // Save the updated report status to the database
+            return $repo->updateReportStatus($report_id, $status);
+        }
+        
+        return false;
+    } catch (Exception $e) {
+        error_log("Error processing report action: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Get all pending submissions
+ * 
+ * @return array Array of pending submissions
+ */
+function get_pending_submissions() {
+    try {
+        require_once __DIR__ . '/classes/Submission.php';
+        require_once __DIR__ . '/classes/SubmissionRepository.php';
+        
+        $repo = new SubmissionRepository();
+        return $repo->getSubmissionsByStatus('Pending');
+    } catch (Exception $e) {
+        error_log("Error getting pending submissions: " . $e->getMessage());
+        return [];
+    }
+}
+
+/**
+ * Get all pending reports
+ * 
+ * @return array Array of pending reports
+ */
+function get_pending_reports() {
+    try {
+        require_once __DIR__ . '/classes/Report.php';
+        require_once __DIR__ . '/classes/ReportRepository.php';
+        
+        $repo = new ReportRepository();
+        return $repo->getReportsByStatus('Pending');
+    } catch (Exception $e) {
+        error_log("Error getting pending reports: " . $e->getMessage());
+        return [];
+    }
+}
+
+/**
+ * Check if a user is an employee by querying the database
+ * 
+ * @param int $user_id The user ID
+ * @return bool True if user is an employee, false otherwise
+ */
+function check_employee_role($user_id) {
+    try {
+        require_once __DIR__ . '/../src/DBconnect.php';
+        global $connection;
+        
+        $stmt = $connection->prepare("SELECT role FROM users WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $role = $stmt->fetchColumn();
+        
+        return $role === 'employee';
+    } catch (Exception $e) {
+        error_log("Error checking if user is employee: " . $e->getMessage());
+        return false;
+    }
+}
 ?>

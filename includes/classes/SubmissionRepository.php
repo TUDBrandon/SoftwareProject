@@ -4,6 +4,8 @@
  * 
  * Handles database operations for submissions
  */
+require_once __DIR__ . '/Submission.php';
+
 class SubmissionRepository {
     private $connection;
     
@@ -49,7 +51,7 @@ class SubmissionRepository {
                 $submissions[] = $this->createSubmissionFromData($result);
             }
         } catch (Exception $e) {
-            error_log("Error retrieving submissions: " . $e->getMessage());
+            error_log("Error retrieving all submissions: " . $e->getMessage());
         }
         
         return $submissions;
@@ -311,10 +313,10 @@ class SubmissionRepository {
                 throw new Exception("Database connection not available");
             }
             
-            $sql = "UPDATE submission SET managedBy = :managedBy WHERE submission_id = :id";
+            $sql = "UPDATE submission SET managedBy = :managerId WHERE submission_id = :id";
             $statement = $this->connection->prepare($sql);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
-            $statement->bindParam(':managedBy', $managerId, PDO::PARAM_INT);
+            $statement->bindParam(':managerId', $managerId, PDO::PARAM_INT);
             
             return $statement->execute();
         } catch (Exception $e) {
@@ -355,7 +357,6 @@ class SubmissionRepository {
     private function createSubmissionFromData($data) {
         $submission = new Submission();
         
-        // Set submission properties based on the updated Submission class fields
         if (isset($data['submission_id'])) $submission->setId($data['submission_id']);
         if (isset($data['username'])) $submission->setCustomerName($data['username']);
         if (isset($data['email'])) $submission->setEmail($data['email']);
@@ -371,7 +372,11 @@ class SubmissionRepository {
             }
         }
         
-        if (isset($data['status_update'])) $submission->setStatus($data['status_update']);
+        // Use the proper setStatus method
+        if (isset($data['status_update'])) {
+            $submission->setStatus($data['status_update']);
+        }
+        
         if (isset($data['managedBy'])) $submission->setManagedBy($data['managedBy']);
         if (isset($data['customer_id'])) $submission->setCustomerId($data['customer_id']);
         

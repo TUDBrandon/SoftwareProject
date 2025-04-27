@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['customer_id'] = $_SESSION['user_id'];
             
             $item_id = save_submit($_POST, $_FILES);
-            $success_message = "Item submitted successfully! Your item ID is: " . $item_id;
+            $success_message = "Item submitted successfully!";
             
             // Clear form data on success
             $_POST = [];
@@ -123,8 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="gaming" <?php echo (isset($_POST['category']) && $_POST['category'] === 'gaming') ? 'selected' : ''; ?>>Gaming</option>
                         <option value="hardware" <?php echo (isset($_POST['category']) && $_POST['category'] === 'hardware') ? 'selected' : ''; ?>>Hardware</option>
                         <option value="phones" <?php echo (isset($_POST['category']) && $_POST['category'] === 'phones') ? 'selected' : ''; ?>>Phones</option>
-                        <option value="laptops" <?php echo (isset($_POST['category']) && $_POST['category'] === 'laptops') ? 'selected' : ''; ?>>Laptops</option>
-                        <option value="accessories" <?php echo (isset($_POST['category']) && $_POST['category'] === 'accessories') ? 'selected' : ''; ?>>Accessories</option>
+                        <option value="consoles" <?php echo (isset($_POST['category']) && $_POST['category'] === 'consoles') ? 'selected' : ''; ?>>Consoles</option>
                     </select>
                 </div>
                 <?php
