@@ -1,23 +1,69 @@
 <?php
+require_once '../includes/common.php';
 require_once '../includes/functions.php';
 require_once '../includes/handle_submit.php';
+require_once '../src/DBconnect.php';
 init_session();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to login page with a message
+    $_SESSION['login_message'] = "You must be logged in to submit an item.";
+    header("Location: login.php");
+    exit;
+}
+
+// Check if user is an employee (not allowed to create submissions)
+if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'employee') {
+    // Redirect to account page with a message
+    $_SESSION['error_message'] = "Employees cannot submit items. Please contact an administrator.";
+    header("Location: account.php");
+    exit;
+}
 
 $success_message = '';
 $error_messages = [];
+
+// Get user data for pre-filling the form
+$user_data = [];
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $user_type = $_SESSION['user_type'] ?? 'user';
+    
+    try {
+        // Get user data based on user type
+        switch ($user_type) {
+            case 'admin':
+                $stmt = $connection->prepare("SELECT * FROM admins WHERE admin_id = :id");
+                break;
+            default:
+                $stmt = $connection->prepare("SELECT * FROM users WHERE user_id = :id");
+        }
+        
+        $stmt->bindParam(':id', $user_id);
+        $stmt->execute();
+        $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        $error_messages[] = "Database error: " . $e->getMessage();
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = validate_submit_form($_POST, $_FILES);
     
     if (empty($errors)) {
         try {
+            // Add customer_id to the submission data
+            $_POST['customer_id'] = $_SESSION['user_id'];
+            
             $item_id = save_submit($_POST, $_FILES);
-            $success_message = "Item submitted successfully! Your item ID is: " . $item_id;
+            $success_message = "Item submitted successfully!";
             
             // Clear form data on success
             $_POST = [];
         } catch (Exception $e) {
-            $error_messages[] = "An error occurred while saving your submission. Please try again.";
+            // Display the actual error message
+            $error_messages[] = "Error: " . $e->getMessage();
         }
     } else {
         $error_messages = $errors;
@@ -31,30 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Item - TechTrade</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
 </head>
 <body>
-    <header>
-        <nav class="main-nav">
-            <div class="nav-left">
-                <a href="index.php" class="logo">TechTrade</a>
-                <ul class="nav-links">
-                    <li><a href="index.php">Buy</a></li>
-                    <li><a href="submitForm.php">Sell</a></li>
-                    <li><a href="gaming.php">Gaming</a></li>
-                    <li><a href="hardware.php">Hardware</a></li>
-                    <li><a href="account.php">Account</a></li>
-                </ul>
-            </div>
-            <div class="search-bar">
-                <form action="search.php" method="GET">
-                    <input type="search" name="q" placeholder="Search for games, phones, tech...">
-                    <button type="submit">Search</button>
-                </form>
-            </div>
-        </nav>
-    </header>
-
+    <?php echo generate_navbar('sell'); ?>
+    
     <main>
         <section class="submit-form">
             <h2>Submit Your Item</h2>
@@ -77,9 +104,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <form action="" method="POST" enctype="multipart/form-data">
                 <?php
-                // Customer Information
-                echo create_form_field('customer_name', 'Your Full Name', 'text', true, $_POST['customer_name'] ?? '');
-                echo create_form_field('email', 'Email Address', 'email', true, $_POST['email'] ?? '');
+                // Customer Information - Pre-fill with user data if available
+                $customer_name = $user_data['username'] ?? $user_data['first_name'] ?? ($_POST['customer_name'] ?? '');
+                $email = $user_data['email'] ?? ($_POST['email'] ?? '');
+                
+                echo create_form_field('customer_name', 'Your Full Name', 'text', true, $customer_name);
+                echo create_form_field('email', 'Email Address', 'email', true, $email);
                 
                 // Item Information
                 echo create_form_field('title', 'Item name', 'text', true, $_POST['title'] ?? '');
@@ -93,8 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="gaming" <?php echo (isset($_POST['category']) && $_POST['category'] === 'gaming') ? 'selected' : ''; ?>>Gaming</option>
                         <option value="hardware" <?php echo (isset($_POST['category']) && $_POST['category'] === 'hardware') ? 'selected' : ''; ?>>Hardware</option>
                         <option value="phones" <?php echo (isset($_POST['category']) && $_POST['category'] === 'phones') ? 'selected' : ''; ?>>Phones</option>
-                        <option value="laptops" <?php echo (isset($_POST['category']) && $_POST['category'] === 'laptops') ? 'selected' : ''; ?>>Laptops</option>
-                        <option value="accessories" <?php echo (isset($_POST['category']) && $_POST['category'] === 'accessories') ? 'selected' : ''; ?>>Accessories</option>
+                        <option value="consoles" <?php echo (isset($_POST['category']) && $_POST['category'] === 'consoles') ? 'selected' : ''; ?>>Consoles</option>
                     </select>
                 </div>
                 <?php

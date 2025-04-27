@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: lightgray;
+    
 }
 
 header {
@@ -16,12 +16,12 @@ header {
 }
 
 .main-nav {
-    max-width: 1500px;
+    max-width: 1900px;
     height: 100px;
-    
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: white;
 }
 
 .nav-left {
@@ -33,7 +33,7 @@ header {
 .logo {
     font-size: 1.8rem;
     font-weight: bold;
-    color: #3498db;
+    color: teal;
     text-decoration: none;
     transition: color 0.2s;
 }
@@ -55,10 +55,54 @@ header {
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s;
+    font-size: larger;
 }
 
 .nav-links a:hover {
     color: #3498db;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    min-width: 180px;
+    border-radius: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.dropdown li {
+    display: block;
+    width: 100%;
+}
+
+.dropdown a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.dropdown a:hover {
+    background-color: #f5f5f5;
+    color: #3498db;
+}
+
+.nav-links li:hover .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 .search-bar {
@@ -98,18 +142,25 @@ header {
 }
 
 main {
+    background-color: teal;
     margin-top: 80px;
+    height: 1300px;
 }
 
 /* Bestsellers Section */
 .bestsellers {
     padding: 2rem;
     margin: 2rem 0;
+    text-align: center;
 }
 
 .bestsellers h2 {
     text-align: center;
     margin-bottom: 2rem;
+    background-color: white;
+    display: inline-block;
+    padding: 0.5rem;
+    border-radius: 5px; 
 }
 
 .product-grid {
@@ -170,7 +221,7 @@ main {
 .buy-now {
     width: 100%;
     padding: 0.8rem;
-    background: #3498db;
+    background: teal;
     color: white;
     border: none;
     border-radius: 4px;
@@ -180,6 +231,70 @@ main {
 
 .buy-now:hover {
     background: #2980b9;
+}
+
+/* Carousel Styles */
+.carousel-container {
+    width: 100%;
+    overflow: hidden;
+    margin: 2rem 0;
+    position: relative;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.carousel-item {
+    flex: 0 0 auto;
+    width: 250px;
+    margin-right: 20px;
+}
+
+.carousel-prev,
+.carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(52, 152, 219, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 18px;
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
+}
+
+.carousel-prev:hover,
+.carousel-next:hover {
+    background-color: rgba(41, 128, 185, 1);
+}
+
+.carousel-prev:disabled,
+.carousel-next:disabled {
+    background-color: rgba(52, 152, 219, 0.4);
+    cursor: not-allowed;
+}
+
+.category-section {
+    padding: 2rem 0;
+    scroll-margin-top: 100px;
 }
 
 /* Form Styles */
@@ -297,18 +412,33 @@ button[type="submit"]:hover {
 /* Product Page Styles */
 .product {
     padding-top: 20px;
-    columns: 2;
+    display: flex;
+    flex-direction: column;
     text-align: center;
+    align-items: center;
+}
+
+.product h3{
+    background-color: white;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 0.5rem;
 }
 
 .product p {
     padding-top: 20px;
     font-size: large;
+    background-color: white;
+    display: inline-block;
+    padding: 0.5rem;
 }
 
 .product img {
     height: 300px;
     width: 380px;
+    display: block;
+    margin: 0 auto;
+    padding-top: 20px;
 }
 
 .cta-buttons {
@@ -333,22 +463,37 @@ button[type="submit"]:hover {
 
 /* Hero Section */
 .hero {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 4rem 2rem;
-    background: linear-gradient(135deg, #3498db, #2980b9);
-    color: white;
+    background-color: teal;
+    color: black;
     margin-bottom: 3rem;
 }
 
 .hero h2 {
+    background-color: white;
     font-size: 2.5rem;
-    margin-bottom: 1rem;
+    display: inline-block;
+    padding: 5px 10px; 
+    border-radius: 5px; 
+    width: fit-content;
+   
 }
 
 .hero p {
-    font-size: 1.2rem;
+    font-size: 2rem;
     margin-bottom: 2rem;
-    opacity: 0.9;
+    background-color: white;
+    margin-top: 20px;
+    display: inline-block;
+    padding: 5px 10px;
+    width: fit-content;
+    padding: 5px 10px; 
+    border-radius: 5px;
+    font-weight: bold;
+    
 }
 
 /* CTA Buttons */
@@ -374,8 +519,8 @@ button[type="submit"]:hover {
 }
 
 .sell-button {
-    background-color: #f1c40f;
-    color: #000;
+    background-color: white;
+    color: black;
 }
 
 .sell-button:hover {
@@ -383,8 +528,8 @@ button[type="submit"]:hover {
 }
 
 .value-checker {
-    background-color: #2ecc71;
-    color: white;
+    background-color: white;
+    color: black;
 }
 
 .value-checker:hover {
@@ -471,4 +616,11 @@ body {
     .text{
         font-size: xx-large;
     }
+}
+
+.footer-content{
+    background-color: teal;
+    color: black;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
 }

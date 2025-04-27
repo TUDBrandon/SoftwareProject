@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once '../includes/common.php';
+require_once '../includes/functions.php';
 ?>
 
 <!DOCTYPE html>
@@ -9,30 +11,11 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechTrade - Buy, Sell, Exchange Tech</title>
-    <link rel="stylesheet" href="css/product.css">
+    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
-    <header>
-        <div class="logo">
-            <h1>TechTrade</h1>
-        </div>
-        <nav class="main-nav">
-            <ul class="nav-links">
-                <!-- We can fill these in with actual links and proper names later -->
-                <li><a href="#">Buy</a></li>
-                <li><a href="#">Sell</a></li>
-                <li><a href="#">Exchange</a></li>
-                <li><a href="#">Gaming</a></li>
-                <li><a href="#">Phones</a></li>
-                <li><a href="#">Account</a></li>
-            </ul>
-        </nav>
-        <div class="search-bar">
-            <input type="search" placeholder="Search for games, phones, tech...">
-            <button type="submit">Search</button>
-        </div>
-    </header>
+    <?php echo generate_navbar('buy'); ?>
 
     <main>
         <section class="hero">
