@@ -293,7 +293,6 @@ class ValidationTest {
                 break;
             }
         }
-        // Note: The actual implementation treats exactly 5 years ago as invalid
         assert($hasDateErrors, "Date exactly 5 years ago should produce date-related validation errors");
         
         // Test Case: Boundary - Just under 5 years ago (valid)

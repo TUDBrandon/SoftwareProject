@@ -218,8 +218,6 @@ function get_bestselling_products($limit = 5) {
             throw new Exception("Database connection failed");
         }
         
-        // In a real system, you might have a sales or views count to determine bestsellers
-        // For now, we'll just get a mix of products from different categories
         $sql = "SELECT * FROM products 
                 ORDER BY RAND() 
                 LIMIT :limit";

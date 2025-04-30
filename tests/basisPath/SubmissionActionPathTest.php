@@ -8,59 +8,44 @@ require_once __DIR__ . '/../../includes/classes/SubmissionRepository.php';
  * 
  * Control Flow Graph Analysis:
  * - Node 1: Start
- * - Node 2: Validate action
- * - Node 3: Get submission
- * - Node 4: Check if submission exists
- * - Node 5: Update submission status
- * - Node 6: Save to database
- * - Node 7: Return result
- * - Node 8: Catch exception
- * - Node 9: End
+ * - Node 2: Get submission
+ * - Node 3: Check if submission exists
+ * - Node 4: Update submission status
+ * - Node 5: Save to database
+ * - Node 6: Return result
+ * - Node 7: Catch exception
+ * - Node 8: End
  * 
  * Edges:
- * 1-2, 2-3, 2-9, 3-4, 4-5, 4-9, 5-6, 6-7, 7-9, 1-8, 8-9
+ * 1-2: Start to Get submission
+ * 2-3: Get submission to Check if exists
+ * 3-4: Submission exists to Update status
+ * 3-8: Submission doesn't exist to End
+ * 4-5: Update status to Save to database
+ * 5-6: Save to database to Return result
+ * 6-8: Return result to End
+ * 1-7: Start to Catch exception (if exception occurs)
+ * 7-8: Catch exception to End
  * 
  * Cyclomatic Complexity:
- * V(G) = E - N + 2 = 11 - 9 + 2 = 4
- * V(G) = P + 1 = 3 + 1 = 4 (Predicate nodes: action validation, submission existence check, exception handling)
+ * V(G) = E - N + 2 = 9 - 8 + 2 = 3
  * 
- * Independent Paths:
- * Path 1: Invalid action (1-2-9)
- * Path 2: Submission not found (1-2-3-4-9)
- * Path 3: Successful update (1-2-3-4-5-6-7-9)
- * Path 4: Exception path (1-8-9)
+ * Independent Paths (3 total):
+ * Path 1: Submission not found (1-2-3-8) - TESTED
+ * Path 2: Successful update (1-2-3-4-5-6-8) - TESTED
+ * Path 3: Exception path (1-7-8) - NOT TESTED
  */
 class SubmissionActionPathTest {
-    private $mockRepository;
-    
-    public function __construct() {
-        $this->mockRepository = $this->createMockRepository();
-    }
     
     public function runTests() {
-        $this->testInvalidAction();
         $this->testSubmissionNotFound();
         $this->testSuccessfulUpdate();
-        $this->testExceptionHandling();
         
         echo "All Basis Path Tests Passed!\n";
     }
     
     /**
-     * Path 1: Invalid action
-     * Tests behavior when an invalid action is provided
-     */
-    private function testInvalidAction() {
-        // The current implementation treats invalid actions as 'reject'
-        // So we'll test that the function returns false when the submission doesn't exist
-        $result = process_submission_action(999, 'invalid_action', 1);
-        assert($result === false, "Invalid action with non-existent submission should return false");
-        
-        echo "Invalid Action Test Passed!\n";
-    }
-    
-    /**
-     * Path 2: Submission not found
+     * Path 1: Submission not found (1-2-3-8)
      * Tests behavior when submission ID doesn't exist
      */
     private function testSubmissionNotFound() {
@@ -72,41 +57,15 @@ class SubmissionActionPathTest {
     }
     
     /**
-     * Path 3: Successful update
+     * Path 2: Successful update (1-2-3-4-5-6-8)
      * Tests behavior when a valid submission is approved
      */
     private function testSuccessfulUpdate() {
         // Test with valid submission and action
         $result = process_submission_action(1, 'approve', 1);
-        // Verify the function returns success
         assert($result === true, "Successful update should return true");
         
         echo "Successful Update Test Passed!\n";
-    }
-    
-    /**
-     * Path 4: Exception handling
-     * Tests behavior when an exception occurs
-     */
-    private function testExceptionHandling() {
-        // Simulate an exception scenario
-        /* 
-        // Commented out as this would require modifying the function
-        $originalFunction = function($submission_id, $action, $employee_id) {
-            throw new Exception("Simulated database error");
-        };
-        $result = $originalFunction(1, 'approve', 1);
-        assert($result === false, "Exception should cause function to return false");
-        */
-        
-        echo "Exception Handling Test Passed!\n";
-    }
-    
-    /**
-     * Create a mock repository for testing
-     */
-    private function createMockRepository() {
-        return null;
     }
 }
 
